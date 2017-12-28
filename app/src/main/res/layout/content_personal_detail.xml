@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".ui.People.PeopleDetailActivity.PeopleDetailActivity"
+    tools:showIn="@layout/activity_personal_detail">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ProgressBar
+            android:id="@+id/pb_people_detail"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <android.support.v7.widget.CardView
+            app:cardElevation="8dp"
+            android:layout_margin="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <LinearLayout
+                android:layout_margin="8dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/profile_image"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_launcher_background"
+                    android:layout_width="130dp"
+                    android:layout_height="200dp" />
+
+                <LinearLayout
+                    android:layout_margin="8dp"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/profile_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="Henry Cavil"
+                        android:textSize="@dimen/textSmall"
+                        android:gravity="center_vertical"
+                        android:layout_margin="4dp"
+                        android:layout_marginStart="12dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/profile_dob"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="Born on 04 May 1983"
+                        android:textSize="@dimen/textSmall"
+                        android:gravity="center_vertical"
+                        android:layout_margin="4dp"
+                        android:layout_marginStart="12dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/profile_birthplace"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="Born in Jersey, Channel Islands, UK"
+                        android:textSize="@dimen/textSmall"
+                        android:gravity="center_vertical"
+                        android:layout_margin="4dp"
+                        android:layout_marginStart="12dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/profile_popularity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="Popularity 44.62%"
+                        android:textSize="@dimen/textSmall"
+                        android:gravity="center_vertical"
+                        android:layout_margin="4dp"
+                        android:layout_marginStart="12dp"
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_margin="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/biography"
+                    android:textSize="20sp"
+                    android:gravity="center_vertical"
+                    android:layout_margin="4dp"
+                    android:layout_marginStart="12dp"
+                    />
+
+                <TextView
+                    android:id="@+id/profile_overview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="Henry William Dalgliesh Cavill (born 5 May 1983) is a British actor. He has appeared in the films The Count of Monte Cristo and Stardust, and played the role of Charles Brandon, 1st Duke of Suffolk, on the Showtime series The Tudors, from 2007 until 2010. He has been cast as Superman in the 2012 film Man of Steel."
+                    android:textSize="@dimen/textSmall"
+                    android:gravity="center_vertical"
+                    android:layout_margin="4dp"
+                    android:layout_marginStart="12dp"
+                    />
+
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            app:cardElevation="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/casted_in"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:visibility="visible"
+                    android:id="@+id/profile_cast"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_star_cast" />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+
+</ScrollView>

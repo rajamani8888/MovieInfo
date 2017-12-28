@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.sriramr.movieinfo">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:name=".MovieApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".ui.MainActivity.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.Movies.MovieListActivity.MovieListActivity"
+            android:label="@string/title_activity_movie_list"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.Movies.MovieMoreActivity.MovieMoreActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.Movies.MovieListActivity.MovieListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.Movies.MovieListActivity.MovieListActivity" />
+        </activity>
+        <activity
+            android:name=".ui.Movies.MovieDetailActivity.MovieDetailActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.Movies.MovieListActivity.MovieListActivity"
+            android:theme="@style/DetailStyle" />
+        <activity
+            android:name=".ui.TvShows.TvShowsMore.TvShowsMoreActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.Movies.MovieListActivity.MovieListActivity" />
+        <activity
+            android:name=".ui.TvShows.TvShowsDetail.TvShowDetailActivity"
+            android:label="@string/title_activity_tv_show_detail"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.People.PopularPeopleActivity.PopularPeopleActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.Movies.MovieListActivity.MovieListActivity" />
+        <activity
+            android:name=".ui.People.PeopleDetailActivity.PeopleDetailActivity"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".ui.Discover.DiscoverActivity.DiscoverActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.Discover.DiscoverDetailActivity.DiscoverDetailActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.Discover.DiscoverActivity.DiscoverActivity" />
+        <activity
+            android:name=".ui.favourites.FavouritesActivity"
+            android:label="@string/title_activity_favourites"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme" />
+    </application>
+
+</manifest>

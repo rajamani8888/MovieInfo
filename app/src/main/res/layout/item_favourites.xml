@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_margin="6dp"
+    android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        android:id="@+id/favs_poster"
+        tools:src="@color/primaryDarkColor"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/movie_image" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight="2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/favs_title"
+            android:layout_margin="4dp"
+            tools:text="Avengers"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/favs_genre"
+            android:layout_margin="4dp"
+            tools:text="Action, Adventure, Comedy, Romance, Thriller"
+            android:textSize="16sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_gravity="center"
+            android:id="@+id/favs_vote"
+            android:layout_margin="4dp"
+            tools:text="4.4"
+            android:drawableStart="@drawable/ic_star"
+            android:textSize="16sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</LinearLayout>

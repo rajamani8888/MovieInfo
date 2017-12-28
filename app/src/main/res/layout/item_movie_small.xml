@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view"
+    android:layout_width="115dp"
+    android:layout_height="250dp"
+    android:elevation="8dp"
+    card_view:cardElevation="12dp"
+    android:layout_margin="4dp"
+    card_view:cardCornerRadius="4dp"
+    android:clickable="true"
+    android:focusable="true">
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/small_movie_image"
+            android:layout_width="match_parent"
+            android:scaleType="fitCenter"
+            android:layout_height="170dp"
+            tools:background="@color/cardview_dark_background"
+            android:contentDescription="@string/movie_image" />
+        <TextView
+            android:layout_below="@id/small_movie_image"
+            android:id="@+id/small_movie_title"
+            android:layout_margin="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Avengers"
+            android:textSize="16sp"
+            />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

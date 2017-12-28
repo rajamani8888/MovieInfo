@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    <!-- Since scroll view can have only child , we encapsulate the whole XML in LinearLayout so
+        that we can have each category vertically arranged
+     -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Airing Today -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ProgressBar
+                android:id="@+id/tv_progressbar_airing_today"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
+
+            <RelativeLayout
+                android:id="@+id/airing_today_relative_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:text="@string/tv_airing_today"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:background="@android:color/transparent"
+                    android:id="@+id/more_airing_today_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/more" />
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_tv_airing_today"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/airing_today_relative_layout"
+                android:layout_marginEnd="2dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_movie_long"/>
+
+        </RelativeLayout>
+
+        <!-- On the air tv -->
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/on_the_air_relative_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:text="@string/on_the_air"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:background="@android:color/transparent"
+                    android:id="@+id/more_on_the_air_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/more" />
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_tv_on_the_air"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/on_the_air_relative_layout"
+                android:layout_marginEnd="2dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_movie_small"/>
+
+        </RelativeLayout>
+
+        <!-- Popular tv -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/popular_relative_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:text="@string/popular"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:background="@android:color/transparent"
+                    android:id="@+id/more_popular_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/more" />
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_tv_popular"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/popular_relative_layout"
+                android:layout_marginEnd="2dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_movie_small"/>
+
+        </RelativeLayout>
+
+        <!-- Top Rated tv -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/top_rated_relative_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:text="@string/toprated_movies"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:background="@android:color/transparent"
+                    android:id="@+id/more_toprated_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/more" />
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_tv_toprated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/top_rated_relative_layout"
+                android:layout_marginEnd="2dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_movie_small"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>
+

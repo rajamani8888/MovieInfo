@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color> -->
+    <color name="movie_title">#4c4c4c</color>
+    <color name="translucent_black">#99000000</color>
+    <color name="primaryColor">#424242</color>
+    <color name="primaryLightColor">#6d6d6d</color>
+    <color name="primaryDarkColor">#1b1b1b</color>
+    <color name="secondaryColor">#ff8f00</color>
+    <color name="secondaryLightColor">#ffc046</color>
+    <color name="secondaryDarkColor">#c56000</color>
+    <color name="primaryTextColor">#ffffff</color>
+    <color name="secondaryTextColor">#000000</color>
+</resources>

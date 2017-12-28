@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="170dp"
+    android:layout_height="220dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="4dp"
+    >
+
+    <ImageView
+        android:id="@+id/discover_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_launcher_background"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/image" />
+
+    <TextView
+        android:id="@+id/discover_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="60dp"
+        tools:text="Interstellar"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:background="@color/translucent_black"
+        android:layout_alignParentBottom="true"
+        />
+
+</RelativeLayout>

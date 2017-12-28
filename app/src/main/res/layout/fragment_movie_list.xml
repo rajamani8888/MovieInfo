@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:layout_height="match_parent">
+
+    <!-- Since scroll view can have only child , we encapsulate the whole XML in LinearLayout so
+        that we can have each category vertically arranged
+     -->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <!-- Now PlayMovievies -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:id="@+id/progressbar_nowplaying"
+                />
+            <RelativeLayout
+                android:id="@+id/now_playing_relative_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/now_playing"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_centerVertical="true"
+                    />
+
+                <Button
+                    android:background="@android:color/transparent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/more_now_playing_movies"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/more"
+                    />
+            </RelativeLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_movies_now_playing"
+                android:layout_marginStart="2dp"
+                android:layout_below="@id/now_playing_relative_layout"
+                android:layout_marginEnd="2dp"
+                android:layout_marginTop="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/item_movie_small"
+                android:orientation="horizontal"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                >
+            </android.support.v7.widget.RecyclerView>
+
+        </RelativeLayout>
+
+        <!-- Popular Movies -->
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <RelativeLayout
+                android:id="@+id/popular_relative_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/popular"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_centerVertical="true"
+                    />
+
+                <Button
+                    android:background="@android:color/transparent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/more_popular_movies"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/more"
+                    />
+            </RelativeLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_movies_popular"
+                android:layout_marginStart="2dp"
+                android:layout_below="@id/popular_relative_layout"
+                android:layout_marginEnd="2dp"
+                android:layout_marginTop="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/item_movie_small"
+                android:orientation="horizontal"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                >
+            </android.support.v7.widget.RecyclerView>
+
+        </RelativeLayout>
+
+        <!-- Top RaMovievies -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <RelativeLayout
+                android:id="@+id/top_rated_relative_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/toprated_movies"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_centerVertical="true"
+                    />
+
+                <Button
+                    android:background="@android:color/transparent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/more_toprated_movies"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/more"
+                    />
+            </RelativeLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_movies_toprated"
+                android:layout_below="@id/top_rated_relative_layout"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="2dp"
+                android:layout_marginTop="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/item_movie_small"
+                android:orientation="horizontal"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                >
+            </android.support.v7.widget.RecyclerView>
+
+        </RelativeLayout>
+
+
+        <!-- UpcomMovievies -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <RelativeLayout
+                android:id="@+id/upcoming_relative_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/upcoming_movies"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_centerVertical="true"
+                    />
+
+                <Button
+                    android:background="@android:color/transparent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/more_upcoming_movies"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/more"
+                    />
+            </RelativeLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_movies_upcoming"
+                android:layout_below="@id/upcoming_relative_layout"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="2dp"
+                android:layout_marginTop="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/item_movie_small"
+                android:orientation="horizontal"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                >
+            </android.support.v7.widget.RecyclerView>
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>
+
