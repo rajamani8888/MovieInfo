@@ -1,7 +1,6 @@
 package com.sriramr.movieinfo.Network;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import java.io.File;
 
@@ -9,6 +8,7 @@ import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 
@@ -38,6 +38,7 @@ public class NetworkService {
 
             retrofit = new Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .baseUrl("https://api.themoviedb.org/3/")
                     .client(client)
                     .build();

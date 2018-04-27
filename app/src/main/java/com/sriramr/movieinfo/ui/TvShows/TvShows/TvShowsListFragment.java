@@ -31,9 +31,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static android.view.View.GONE;
@@ -62,19 +63,15 @@ public class TvShowsListFragment extends Fragment implements View.OnClickListene
     Unbinder unbinder;
 
     RecyclerView.LayoutManager airing_today_layout_manager, on_the_air_layout_manager, popular_layout_manager, top_rated_layout_manager;
-
     TvItemAdapter on_the_air_adapter;
     TvItemAdapter popular_adapter;
     TvItemAdapter top_rated_adapter;
     TvAiringTodayItemAdapter airing_today_adapter;
-
     MovieService service;
-
-    Call<TvShowsResponse> onTheAirCall, airingTodayCall, popularCall, topRatedCall;
-
+    Observable<TvShowsResponse> onTheAirObservable, airingTodayObservable, popularObservable, topRatedObservable;
     List<TvShow> onTheAir, popular, topRated, airingToday;
-
     Context context;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Nullable
     @Override
@@ -96,12 +93,10 @@ public class TvShowsListFragment extends Fragment implements View.OnClickListene
 
         service = NetworkService.getService(context);
 
-        airingTodayCall = service.getAiringTodayTvShows(AppConstants.API_KEY, 1);
-        onTheAirCall = service.getOnTheAirTvShows(AppConstants.API_KEY, 1);
-        popularCall = service.getPopularTv(AppConstants.API_KEY, 1);
-        topRatedCall = service.getTopRatedTv(AppConstants.API_KEY, 1);
-
-        makeNetworkCalls();
+        airingTodayObservable = service.getAiringTodayTvShows(AppConstants.API_KEY, 1);
+        onTheAirObservable = service.getOnTheAirTvShows(AppConstants.API_KEY, 1);
+        popularObservable = service.getPopularTv(AppConstants.API_KEY, 1);
+        topRatedObservable = service.getTopRatedTv(AppConstants.API_KEY, 1);
 
     }
 
@@ -170,80 +165,68 @@ public class TvShowsListFragment extends Fragment implements View.OnClickListene
 
     private void makeNetworkCalls() {
 
-        airingTodayCall.enqueue(new Callback<TvShowsResponse>() {
-            @Override
-            public void onResponse(Call<TvShowsResponse> call, Response<TvShowsResponse> response) {
-                if (response.isSuccessful()) {
-                    airingToday.addAll(response.body().getResults());
-                    airing_today_adapter.changeItems(airingToday);
-                } else {
-                    Toast.makeText(context, "Error loading Airing Today Tv Shows. If error persists, contact the developer", Toast.LENGTH_LONG).show();
-                }
-                tvProgressbarAiringToday.setVisibility(GONE);
-            }
+        compositeDisposable.add(
+                airingTodayObservable.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(tvShowsResponse -> {
+                            airingToday.addAll(tvShowsResponse.getResults());
+                            airing_today_adapter.changeItems(airingToday);
+                            tvProgressbarAiringToday.setVisibility(GONE);
+                        }, throwable -> {
+                            tvProgressbarAiringToday.setVisibility(GONE);
+                            Timber.e(throwable);
+                            Toast.makeText(context, "Error loading Airing Today Shows", Toast.LENGTH_SHORT).show();
+                        })
+        );
 
-            @Override
-            public void onFailure(Call<TvShowsResponse> call, Throwable t) {
-                Toast.makeText(context, "Faiure", Toast.LENGTH_SHORT).show();
-                Timber.e(t.getMessage());
-                tvProgressbarAiringToday.setVisibility(GONE);
-            }
-        });
+        compositeDisposable.add(
+                onTheAirObservable.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(tvShowsResponse -> {
+                            onTheAir.addAll(tvShowsResponse.getResults());
+                            on_the_air_adapter.changeItems(onTheAir);
+                        }, throwable -> {
+                            Toast.makeText(context, "Faiure", Toast.LENGTH_SHORT).show();
+                            Timber.e(throwable);
+                        })
+        );
 
-        onTheAirCall.enqueue(new Callback<TvShowsResponse>() {
-            @Override
-            public void onResponse(Call<TvShowsResponse> call, Response<TvShowsResponse> response) {
-                if (response.isSuccessful()) {
-                    onTheAir.addAll(response.body().getResults());
-                    on_the_air_adapter.changeItems(onTheAir);
-                } else {
-                    Toast.makeText(context, "Faiure", Toast.LENGTH_SHORT).show();
-                }
-            }
+        compositeDisposable.add(
+                popularObservable.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(tvShowsResponse -> {
+                            popular.addAll(tvShowsResponse.getResults());
+                            popular_adapter.changeItems(popular);
+                        }, throwable -> {
+                            Toast.makeText(context, "Failure", Toast.LENGTH_SHORT).show();
+                            Timber.e(throwable);
+                        })
+        );
 
-            @Override
-            public void onFailure(Call<TvShowsResponse> call, Throwable t) {
-                Toast.makeText(context, "Faiure", Toast.LENGTH_SHORT).show();
-                Timber.e(t.getMessage());
-            }
-        });
+        compositeDisposable.add(
+                topRatedObservable.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(tvShowsResponse -> {
+                            topRated.addAll(tvShowsResponse.getResults());
+                            top_rated_adapter.changeItems(topRated);
+                        }, throwable -> {
+                            Timber.e(throwable);
+                            Toast.makeText(context, "Faiure", Toast.LENGTH_SHORT).show();
+                        })
+        );
 
-        popularCall.enqueue(new Callback<TvShowsResponse>() {
-            @Override
-            public void onResponse(Call<TvShowsResponse> call, Response<TvShowsResponse> response) {
-                if (response.isSuccessful()) {
-                    popular.addAll(response.body().getResults());
-                    popular_adapter.changeItems(popular);
-                } else {
-                    Toast.makeText(context, "Faiure", Toast.LENGTH_SHORT).show();
-                }
-            }
+    }
 
-            @Override
-            public void onFailure(Call<TvShowsResponse> call, Throwable t) {
-                Toast.makeText(context, "Faiure", Toast.LENGTH_SHORT).show();
-                Timber.e(t.getMessage());
-            }
-        });
+    @Override
+    public void onResume() {
+        super.onResume();
+        makeNetworkCalls();
+    }
 
-        topRatedCall.enqueue(new Callback<TvShowsResponse>() {
-            @Override
-            public void onResponse(Call<TvShowsResponse> call, Response<TvShowsResponse> response) {
-                if (response.isSuccessful()) {
-                    topRated.addAll(response.body().getResults());
-                    top_rated_adapter.changeItems(topRated);
-                } else {
-                    Toast.makeText(context, "Faiure", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<TvShowsResponse> call, Throwable t) {
-                Toast.makeText(context, "Faiure", Toast.LENGTH_SHORT).show();
-                Timber.e(t.getMessage());
-            }
-        });
-
+    @Override
+    public void onPause() {
+        compositeDisposable.dispose();
+        super.onPause();
     }
 
     @Override

@@ -110,7 +110,6 @@ public class MovieListActivity extends AppCompatActivity
         FragmentManager manager = getSupportFragmentManager();
         switch (id) {
             case R.id.nav_movies:
-
                 manager.beginTransaction()
                         .replace(R.id.movie_list_activity_frame, new MovieListFragment())
                         .commit();

@@ -29,9 +29,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class TvShowsMoreActivity extends AppCompatActivity implements TvShowsMoreAdapter.TvShowItemClickListener {
@@ -46,10 +47,9 @@ public class TvShowsMoreActivity extends AppCompatActivity implements TvShowsMor
 
     List<TvShow> showList;
     int page = 1;
-
     TvShowsMoreAdapter showsMoreAdapter;
-
     MovieService service;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +101,7 @@ public class TvShowsMoreActivity extends AppCompatActivity implements TvShowsMor
     }
 
     private void getDataFromApi(int page) {
-        Call<TvShowsResponse> call;
+        Observable<TvShowsResponse> call;
         switch (this.movieTag) {
             case AppConstants.TAG_TV_ON_THE_AIR:
                 call = service.getOnTheAirTvShows(AppConstants.API_KEY, page);
@@ -120,27 +120,19 @@ public class TvShowsMoreActivity extends AppCompatActivity implements TvShowsMor
                 break;
         }
 
-        call.enqueue(new Callback<TvShowsResponse>() {
-            @Override
-            public void onResponse(Call<TvShowsResponse> call, Response<TvShowsResponse> response) {
-                if (response.isSuccessful()) {
-                    showList.addAll(response.body().getResults());
-                    showsMoreAdapter.setData(showList);
-                    pbMoreTvShow.setVisibility(View.GONE);
-                } else {
-                    Timber.e(response.message());
-                    Toast.makeText(TvShowsMoreActivity.this, "Error. Try again", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<TvShowsResponse> call, Throwable t) {
-                Timber.e(t.getMessage());
-                Toast.makeText(TvShowsMoreActivity.this, "Error. Try again", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        });
+        compositeDisposable.add(
+                call.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(tvShowsResponse -> {
+                            showList.addAll(tvShowsResponse.getResults());
+                            showsMoreAdapter.setData(showList);
+                            pbMoreTvShow.setVisibility(View.GONE);
+                        }, throwable -> {
+                            Timber.e(throwable);
+                            Toast.makeText(TvShowsMoreActivity.this, "Error. Try again", Toast.LENGTH_SHORT).show();
+                            finish();
+                        })
+        );
 
     }
 

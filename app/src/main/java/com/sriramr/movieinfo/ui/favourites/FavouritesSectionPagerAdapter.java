@@ -15,7 +15,16 @@ public class FavouritesSectionPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return FavouritesMoviesFragment.newInstance(type);
+
+        switch (position) {
+            case 0:
+                return FavouritesMoviesFragment.newInstance(type);
+            case 1:
+                return FavouriteShowsFragment.newInstance(type);
+            default:
+                return FavouritesMoviesFragment.newInstance(type);
+        }
+
     }
 
     @Override

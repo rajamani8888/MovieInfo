@@ -34,9 +34,10 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class TvShowDetailActivity extends AppCompatActivity implements TvShowCastAdapter.CastClickListener, TvShowRecommendationsAdapter.RecommendationClickListener {
@@ -100,6 +101,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements TvShowCas
     List<Recommendation> recommendations = new ArrayList<>();
     List<Cast> cast = new ArrayList<>();
     List<Seasons> seasons = new ArrayList<>();
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     // TODO add similar tv shows later on
     @Override
@@ -154,26 +156,6 @@ public class TvShowDetailActivity extends AppCompatActivity implements TvShowCas
         castAdapter = new TvShowCastAdapter(this, this);
         detailRvCast.setAdapter(castAdapter);
 
-        Call<TvShowDetailResponse> call = service.getDetailTvShow(tvShowId, AppConstants.API_KEY, AppConstants.TV_SHOW_APPEND_TO_RESPONSE);
-
-        call.enqueue(new Callback<TvShowDetailResponse>() {
-            @Override
-            public void onResponse(Call<TvShowDetailResponse> call, Response<TvShowDetailResponse> response) {
-                if (response.isSuccessful()) {
-                    completeUI(response.body());
-                    Toast.makeText(TvShowDetailActivity.this, "Loaded..", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(TvShowDetailActivity.this, "Network call failed. Please try again", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<TvShowDetailResponse> call, Throwable t) {
-                Toast.makeText(TvShowDetailActivity.this, "Error. Please try again", Toast.LENGTH_SHORT).show();
-                Timber.e(t.getMessage());
-            }
-        });
-
         detailCastSeeAll.setOnClickListener(view -> {
             ArrayList<PopularPeople> popularPeople = new ArrayList<>();
             for (Cast c : cast) {
@@ -186,11 +168,25 @@ public class TvShowDetailActivity extends AppCompatActivity implements TvShowCas
 
             Parcelable p = Parcels.wrap(popularPeople);
 
-            Intent i1 = new Intent(TvShowDetailActivity.this, PopularPeopleActivity.class);
-            i1.putExtra(AppConstants.CAST_LIST, p);
-            i1.putExtra(AppConstants.TAG, AppConstants.MOVIE_CAST);
-            startActivity(i1);
+            Intent tvShowIntent = new Intent(TvShowDetailActivity.this, PopularPeopleActivity.class);
+            tvShowIntent.putExtra(AppConstants.CAST_LIST, p);
+            tvShowIntent.putExtra(AppConstants.TAG, AppConstants.MOVIE_CAST);
+            startActivity(tvShowIntent);
         });
+
+    }
+
+    public void getDataFromApi() {
+        Observable<TvShowDetailResponse> call = service.getDetailTvShow(tvShowId, AppConstants.API_KEY, AppConstants.TV_SHOW_APPEND_TO_RESPONSE);
+
+        compositeDisposable.add(
+                call.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(this::completeUI, throwable -> {
+                            Toast.makeText(this, "Error loading data", Toast.LENGTH_SHORT).show();
+                            Timber.e(throwable);
+                        })
+        );
 
     }
 
@@ -263,6 +259,18 @@ public class TvShowDetailActivity extends AppCompatActivity implements TvShowCas
         recommendations.addAll(show.getRecommendations().getResults());
         recommendationsAdapter.setRecommendations(recommendations);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getDataFromApi();
+    }
+
+    @Override
+    protected void onPause() {
+        compositeDisposable.dispose();
+        super.onPause();
     }
 
     @Override

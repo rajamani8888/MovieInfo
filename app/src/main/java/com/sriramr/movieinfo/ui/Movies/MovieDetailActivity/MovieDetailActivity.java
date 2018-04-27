@@ -46,9 +46,10 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class MovieDetailActivity extends AppCompatActivity implements View.OnClickListener, MovieDetailCastAdapter.CastItemClickListener, MovieDetailRecommendationsAdapter.RecommendationClickListener {
@@ -94,19 +95,11 @@ public class MovieDetailActivity extends AppCompatActivity implements View.OnCli
     @BindView(R.id.detail_rv_recommendations)
     RecyclerView detailRvRecommendations;
 
-    String movieId = "", movieTitle = "", moviePoster = "", movieGenre = "", movieVoteAverage = "";
-
-    MovieService movieService;
-    MovieDetailCastAdapter castAdapter;
-    MovieDetailRecommendationsAdapter recommendationsAdapter;
-
     @BindView(R.id.detail_images_view)
     ImageView detailImagesView;
     @BindView(R.id.detail_videos_view)
     ImageView detailVideosView;
 
-    List<Cast> casts;
-    List<Recommendation> recommendations;
     @BindView(R.id.movie_detail_pb)
     ProgressBar movieDetailPb;
 
@@ -122,10 +115,16 @@ public class MovieDetailActivity extends AppCompatActivity implements View.OnCli
     Button movieWatchLater;
 
     private boolean isAnimShowed = false;
-
     private Animation alphaAnim;
-
     private MovieWrapper movie;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+    String movieId = "", movieTitle = "", moviePoster = "", movieGenre = "", movieVoteAverage = "";
+    MovieService movieService;
+    MovieDetailCastAdapter castAdapter;
+    MovieDetailRecommendationsAdapter recommendationsAdapter;
+    List<Cast> casts = new ArrayList<>();
+    List<Recommendation> recommendations = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,9 +135,6 @@ public class MovieDetailActivity extends AppCompatActivity implements View.OnCli
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        casts = new ArrayList<>();
-        recommendations = new ArrayList<>();
 
         // get extras from the previous activity
         Intent intent = getIntent();
@@ -164,34 +160,25 @@ public class MovieDetailActivity extends AppCompatActivity implements View.OnCli
         movieService = NetworkService.getService(this);
         movieDetailPb.setVisibility(View.VISIBLE);
 
-        Call<MovieDetailResponse> movieDetailResponseCall = movieService.getMovieDetails(movieId, AppConstants.API_KEY, AppConstants.MOVIE_APPEND_TO_RESPONSE);
-
-        movieDetailResponseCall.enqueue(new Callback<MovieDetailResponse>() {
-            @Override
-            public void onResponse(Call<MovieDetailResponse> call, Response<MovieDetailResponse> response) {
-                if (response.isSuccessful()) {
-                    completeUI(response.body());
-                } else {
-                    Toast.makeText(MovieDetailActivity.this, "Error loading..", Toast.LENGTH_SHORT).show();
-                }
-                movieDetailPb.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onFailure(Call<MovieDetailResponse> call, Throwable t) {
-                Toast.makeText(MovieDetailActivity.this, "Error loading..", Toast.LENGTH_SHORT).show();
-                movieDetailPb.setVisibility(View.GONE);
-            }
-        });
-
         //clicks
         detailCastSeeAll.setOnClickListener(this);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        movie = DatabaseRepository.getMovieWithId(movieId);
+    public void getDataFromApi() {
+        Observable<MovieDetailResponse> movieDetailObservable = movieService.getMovieDetails(movieId, AppConstants.API_KEY, AppConstants.MOVIE_APPEND_TO_RESPONSE);
+
+        compositeDisposable.add(
+                movieDetailObservable.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(movie -> {
+                            completeUI(movie);
+                            movieDetailPb.setVisibility(View.GONE);
+                        }, throwable -> {
+                            Toast.makeText(MovieDetailActivity.this, "Error loading..", Toast.LENGTH_SHORT).show();
+                            movieDetailPb.setVisibility(View.GONE);
+                        })
+        );
+
     }
 
     private void setupViews() {
@@ -409,4 +396,16 @@ public class MovieDetailActivity extends AppCompatActivity implements View.OnCli
         DatabaseRepository.insertMovies(movie);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getDataFromApi();
+        movie = DatabaseRepository.getMovieWithId(movieId);
+    }
+
+    @Override
+    protected void onPause() {
+        compositeDisposable.dispose();
+        super.onPause();
+    }
 }

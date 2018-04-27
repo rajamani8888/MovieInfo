@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.sriramr.movieinfo.R;
 import com.sriramr.movieinfo.database.DatabaseRepository;
-import com.sriramr.movieinfo.database.MovieWrapper;
+import com.sriramr.movieinfo.database.ShowsWrapper;
 import com.sriramr.movieinfo.utils.AppConstants;
 
 import java.util.List;
@@ -20,22 +20,24 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import timber.log.Timber;
 
-public class FavouritesMoviesFragment extends Fragment implements FavouritesMovieAdapter.FavouritesItemClickListener {
+public class FavouriteShowsFragment extends Fragment implements FavouriteShowsAdapter.FavouritesItemClickListener {
 
     @BindView(R.id.fav_rv)
     RecyclerView favRv;
     Unbinder unbinder;
 
-    private List<MovieWrapper> movies;
+    private List<ShowsWrapper> shows;
     private String tag;
 
-    private FavouritesMovieAdapter mAdapter;
+    private FavouriteShowsAdapter mAdapter;
+
     /**
      * Returns a new instance of this fragment for the given section [ Watched | Favourites | Watch Later ]
      */
-    public static FavouritesMoviesFragment newInstance(String tag) {
-        FavouritesMoviesFragment fragment = new FavouritesMoviesFragment();
+    public static FavouriteShowsFragment newInstance(String tag) {
+        FavouriteShowsFragment fragment = new FavouriteShowsFragment();
         Bundle args = new Bundle();
         args.putString(AppConstants.TAG, tag);
         fragment.setArguments(args);
@@ -49,6 +51,11 @@ public class FavouritesMoviesFragment extends Fragment implements FavouritesMovi
         View rootView = inflater.inflate(R.layout.fragment_favourites, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         Bundle b = getArguments();
+        if (b == null) {
+            Timber.e("Bundle is null");
+            getActivity().finish();
+            return null;
+        }
         if (b.containsKey(AppConstants.TAG)) {
             tag = b.getString(AppConstants.TAG);
         } else {
@@ -62,21 +69,28 @@ public class FavouritesMoviesFragment extends Fragment implements FavouritesMovi
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
-        switch (tag){
-            case AppConstants.FAVOURITES: movies = DatabaseRepository.getFavouriteMovies(); break;
-            case AppConstants.WATCH_LATER : movies = DatabaseRepository.getWatchLaterMovies(); break;
-            case AppConstants.WATCHED : movies = DatabaseRepository.getWatchedMovies(); break;
-            default: movies = DatabaseRepository.getFavouriteMovies();
+        switch (tag) {
+            case AppConstants.FAVOURITES:
+                shows = DatabaseRepository.getFavouriteShows();
+                break;
+            case AppConstants.WATCH_LATER:
+                shows = DatabaseRepository.getWatchLaterShows();
+                break;
+            case AppConstants.WATCHED:
+                shows = DatabaseRepository.getWatchedShows();
+                break;
+            default:
+                shows = DatabaseRepository.getFavouriteShows();
         }
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         favRv.setLayoutManager(layoutManager);
         favRv.setHasFixedSize(true);
 
-        mAdapter = new FavouritesMovieAdapter(getActivity(),this);
+        mAdapter = new FavouriteShowsAdapter(getActivity(), this);
         favRv.setAdapter(mAdapter);
 
-        mAdapter.addMovies(movies);
+        mAdapter.addShows(shows);
 
     }
 
@@ -87,7 +101,7 @@ public class FavouritesMoviesFragment extends Fragment implements FavouritesMovi
     }
 
     @Override
-    public void onFavouritesItemClicked(MovieWrapper movieWrapper) {
+    public void onFavouritesItemClicked(ShowsWrapper movieWrapper) {
         Toast.makeText(getActivity(), movieWrapper.getTitle(), Toast.LENGTH_SHORT).show();
     }
 }

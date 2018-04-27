@@ -10,16 +10,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
 import com.sriramr.movieinfo.Network.MovieService;
 import com.sriramr.movieinfo.Network.NetworkService;
 import com.sriramr.movieinfo.R;
-import com.sriramr.movieinfo.ui.Movies.MovieDetailActivity.MovieDetailActivity;
-import com.sriramr.movieinfo.ui.TvShows.TvShowsDetail.TvShowDetailActivity;
-import com.sriramr.movieinfo.utils.AppConstants;
 import com.sriramr.movieinfo.ui.Discover.DiscoverDetailActivity.Models.DiscoverMovieItem;
 import com.sriramr.movieinfo.ui.Discover.DiscoverDetailActivity.Models.DiscoverMoviesResponse;
 import com.sriramr.movieinfo.ui.Discover.DiscoverDetailActivity.Models.DiscoverShowItem;
 import com.sriramr.movieinfo.ui.Discover.DiscoverDetailActivity.Models.DiscoverShowResponse;
+import com.sriramr.movieinfo.ui.Movies.MovieDetailActivity.MovieDetailActivity;
+import com.sriramr.movieinfo.ui.TvShows.TvShowsDetail.TvShowDetailActivity;
+import com.sriramr.movieinfo.utils.AppConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +28,10 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static android.view.View.GONE;
@@ -57,6 +59,8 @@ public class DiscoverDetailActivity extends AppCompatActivity implements Discove
 
     int page = 1;
 
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +69,6 @@ public class DiscoverDetailActivity extends AppCompatActivity implements Discove
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         Intent i = getIntent();
         if (i != null) {
@@ -80,59 +83,54 @@ public class DiscoverDetailActivity extends AppCompatActivity implements Discove
 
         getSupportActionBar().setTitle(genreName);
 
-
         RecyclerView.LayoutManager discoverLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rvDiscover.setLayoutManager(discoverLayoutManager);
         rvDiscover.setHasFixedSize(true);
-        discoverAdapter = new DiscoverDetailAdapter(this,this);
+        discoverAdapter = new DiscoverDetailAdapter(this, this);
         rvDiscover.setAdapter(discoverAdapter);
 
         service = NetworkService.getService(this);
 
-        progress.setVisibility(View.VISIBLE);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        progress.setVisibility(View.VISIBLE);
         if (Objects.equals(genreType, AppConstants.DISCOVER_MOVIE)) {
             getDiscoverMovies();
         } else {
             getDiscoverShows();
         }
-
     }
 
     void getDiscoverMovies() {
 
-        Call<DiscoverMoviesResponse> call = service.getDiscoveredMovies(AppConstants.API_KEY, genreId, page);
+        Observable<DiscoverMoviesResponse> call = service.getDiscoveredMovies(AppConstants.API_KEY, genreId, page);
 
-        call.enqueue(new Callback<DiscoverMoviesResponse>() {
-            @Override
-            public void onResponse(Call<DiscoverMoviesResponse> call, Response<DiscoverMoviesResponse> response) {
-                if (response.isSuccessful()) {
-                    movies = response.body().getResults();
-                    discoverAdapter.setMovies(movies);
-                } else {
+        compositeDisposable.add(call
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(discoverMoviesResponse -> {
+                    discoverAdapter.setMovies(discoverMoviesResponse.getResults());
+                    progress.setVisibility(GONE);
+                }, throwable -> {
+                    progress.setVisibility(GONE);
+                    Timber.e(throwable);
                     Toast.makeText(DiscoverDetailActivity.this, "Error.. Could not load movies.. Try again..", Toast.LENGTH_SHORT).show();
-                }
-                progress.setVisibility(GONE);
-            }
-
-            @Override
-            public void onFailure(Call<DiscoverMoviesResponse> call, Throwable t) {
-                progress.setVisibility(GONE);
-                Toast.makeText(DiscoverDetailActivity.this, "Error.. Could not load movies.. Try again..", Toast.LENGTH_SHORT).show();
-            }
-        });
-
+                })
+        );
     }
 
     void getDiscoverShows() {
-        Call<DiscoverShowResponse> call = service.getDiscoverShows(AppConstants.API_KEY, genreId, page);
+        Observable<DiscoverShowResponse> call = service.getDiscoverShows(AppConstants.API_KEY, genreId, page);
 
-        call.enqueue(new Callback<DiscoverShowResponse>() {
-            @Override
-            public void onResponse(Call<DiscoverShowResponse> call, Response<DiscoverShowResponse> response) {
-                if (response.isSuccessful()) {
+        compositeDisposable.add(call
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(discoverShowResponse -> {
                     List<DiscoverMovieItem> showsItems = new ArrayList<>();
-                    shows = response.body().getResults();
+                    shows = discoverShowResponse.getResults();
                     for (DiscoverShowItem showItem : shows) {
                         DiscoverMovieItem show = new DiscoverMovieItem();
                         show.setTitle(showItem.getName());
@@ -143,20 +141,12 @@ public class DiscoverDetailActivity extends AppCompatActivity implements Discove
                         showsItems.add(show);
                     }
                     discoverAdapter.setMovies(showsItems);
-                } else {
+                    progress.setVisibility(GONE);
+                }, throwable -> {
                     Toast.makeText(DiscoverDetailActivity.this, "Error. Please try again.", Toast.LENGTH_SHORT).show();
-                    Timber.e(response.message());
-                }
-                progress.setVisibility(GONE);
-            }
-
-            @Override
-            public void onFailure(Call<DiscoverShowResponse> call, Throwable t) {
-                Toast.makeText(DiscoverDetailActivity.this, "Error. Please try again.", Toast.LENGTH_SHORT).show();
-                Timber.e(t.getMessage());
-                progress.setVisibility(GONE);
-            }
-        });
+                    Timber.e(throwable);
+                    progress.setVisibility(GONE);
+                }));
 
     }
 
@@ -173,5 +163,11 @@ public class DiscoverDetailActivity extends AppCompatActivity implements Discove
             i.putExtra(AppConstants.TV_SHOW_TITLE, shows.get(position).getName());
             startActivity(i);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        compositeDisposable.dispose();
+        super.onPause();
     }
 }

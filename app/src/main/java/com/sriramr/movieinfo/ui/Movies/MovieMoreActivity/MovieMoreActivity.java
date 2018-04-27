@@ -28,9 +28,10 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class MovieMoreActivity extends AppCompatActivity implements MovieListAdapter.MoreMoviesClickListener {
@@ -49,11 +50,13 @@ public class MovieMoreActivity extends AppCompatActivity implements MovieListAda
 
     String movieTag;
 
-    Call<MovieListResponse> movieCall;
+    Observable<MovieListResponse> movieCall;
 
     int page = 1;
 
     ArrayList<Movie> movies;
+
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +97,6 @@ public class MovieMoreActivity extends AppCompatActivity implements MovieListAda
         movieListAdapter = new MovieListAdapter(this, this);
         rvMovieMore.setAdapter(movieListAdapter);
 
-        getDataFromApi(page);
-
         EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
@@ -107,7 +108,6 @@ public class MovieMoreActivity extends AppCompatActivity implements MovieListAda
 
         rvMovieMore.addOnScrollListener(scrollListener);
     }
-
 
     private void getDataFromApi(int page) {
 
@@ -129,26 +129,18 @@ public class MovieMoreActivity extends AppCompatActivity implements MovieListAda
                 return;
         }
 
-        movieCall.enqueue(new Callback<MovieListResponse>() {
-            @Override
-            public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
-                progressBar.setVisibility(View.GONE);
-                if (response.isSuccessful() && response.code() == 200) {
-                    movies.addAll(response.body().getResults());
-                    movieListAdapter.setData(movies);
-                } else {
-                    Timber.e(response.errorBody().toString());
-                    Toast.makeText(MovieMoreActivity.this, "Check your Internet Connection and try again", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MovieListResponse> call, Throwable t) {
-                Toast.makeText(MovieMoreActivity.this, "Check your internet connection and try again. If the error persists, Contact the developer", Toast.LENGTH_SHORT).show();
-                progressBar.setVisibility(View.GONE);
-            }
-        });
-
+        compositeDisposable.add(
+                movieCall.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(movieListResponse -> {
+                            progressBar.setVisibility(View.GONE);
+                            movies.addAll(movieListResponse.getResults());
+                            movieListAdapter.setData(movies);
+                        }, throwable -> {
+                            Timber.e(throwable);
+                            Toast.makeText(MovieMoreActivity.this, "Check your Internet Connection and try again", Toast.LENGTH_SHORT).show();
+                        })
+        );
 
     }
 
@@ -184,5 +176,16 @@ public class MovieMoreActivity extends AppCompatActivity implements MovieListAda
         popup.show();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getDataFromApi(page);
+    }
+
+    @Override
+    protected void onPause() {
+        compositeDisposable.dispose();
+        super.onPause();
+    }
 
 }

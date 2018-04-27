@@ -28,9 +28,10 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class PeopleDetailActivity extends AppCompatActivity implements CastAdapter.CastClickListener {
 
@@ -59,6 +60,8 @@ public class PeopleDetailActivity extends AppCompatActivity implements CastAdapt
     List<CastItem> cast = new ArrayList<>();
     @BindView(R.id.pb_people_detail)
     ProgressBar pbPeopleDetail;
+
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,24 +98,22 @@ public class PeopleDetailActivity extends AppCompatActivity implements CastAdapt
 
         pbPeopleDetail.setVisibility(View.VISIBLE);
 
-        // network call to get the details
-        Call<PeopleDetailResponse> call = service.getPersonDetail(id, AppConstants.API_KEY, AppConstants.STAR_APPEND_TO_RESPONSE);
-        call.enqueue(new Callback<PeopleDetailResponse>() {
-            @Override
-            public void onResponse(Call<PeopleDetailResponse> call, Response<PeopleDetailResponse> response) {
-                if (response.isSuccessful()) {
-                    updateUI(response.body());
-                } else {
-                    Toast.makeText(PeopleDetailActivity.this, "Error. Please Try again..", Toast.LENGTH_SHORT).show();
-                }
-                pbPeopleDetail.setVisibility(View.GONE);
-            }
+    }
 
-            @Override
-            public void onFailure(Call<PeopleDetailResponse> call, Throwable t) {
-                pbPeopleDetail.setVisibility(View.GONE);
-            }
-        });
+    private void getDataFromApi() {
+        Observable<PeopleDetailResponse> call = service.getPersonDetail(id, AppConstants.API_KEY, AppConstants.STAR_APPEND_TO_RESPONSE);
+        compositeDisposable.add(
+                call.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(peopleDetailResponse -> {
+                            updateUI(peopleDetailResponse);
+                            pbPeopleDetail.setVisibility(View.GONE);
+                        }, throwable -> {
+                            Toast.makeText(PeopleDetailActivity.this, "Error. Please Try again..", Toast.LENGTH_SHORT).show();
+                            pbPeopleDetail.setVisibility(View.GONE);
+                        })
+        );
+
     }
 
     private void updateUI(PeopleDetailResponse response) {
@@ -134,6 +135,18 @@ public class PeopleDetailActivity extends AppCompatActivity implements CastAdapt
         cast = response.getCombinedCredits().getCast();
         castAdapter.setCast(cast);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getDataFromApi();
+    }
+
+    @Override
+    protected void onPause() {
+        compositeDisposable.dispose();
+        super.onPause();
     }
 
     @Override

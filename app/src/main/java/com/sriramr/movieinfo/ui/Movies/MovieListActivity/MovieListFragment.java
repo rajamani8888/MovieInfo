@@ -28,9 +28,10 @@ import com.sriramr.movieinfo.utils.AppConstants;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 import static android.view.View.GONE;
 
@@ -66,11 +67,12 @@ public class MovieListFragment extends Fragment implements View.OnClickListener,
 
     Context context;
 
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
     }
-
 
     @Nullable
     @Override
@@ -90,108 +92,76 @@ public class MovieListFragment extends Fragment implements View.OnClickListener,
 
         movieService = NetworkService.getService(context);
 
-        getDataFromApi(1);
-
-
     }
 
     private void getDataFromApi(int page) {
 
+        Observable<MovieListResponse> nowPlayingObservable = movieService.getNowPlayingMovies(page, AppConstants.API_KEY);
+        Observable<MovieListResponse> popularObservable = movieService.getPopularMovies(page, AppConstants.API_KEY);
+        Observable<MovieListResponse> topRatedObservable = movieService.getTopRatedMovies(page, AppConstants.API_KEY);
+        Observable<MovieListResponse> upcomingObservable = movieService.getUpcomingMovies(page, AppConstants.API_KEY);
 
-        Call<MovieListResponse> callNowPlaying = movieService.getNowPlayingMovies(page, AppConstants.API_KEY);
-        Call<MovieListResponse> callPopular = movieService.getPopularMovies(page, AppConstants.API_KEY);
-        Call<MovieListResponse> callTopRated = movieService.getTopRatedMovies(page, AppConstants.API_KEY);
-        Call<MovieListResponse> callUpcoming = movieService.getUpcomingMovies(page, AppConstants.API_KEY);
+        compositeDisposable.add(
+                nowPlayingObservable.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(nowPlayingResults -> {
+                            nowplayingMoviesAdapter.changeItems(nowPlayingResults.getResults());
+                            progressbar.setVisibility(GONE);
+                        }, throwable -> {
+                            Toast.makeText(context, "Error loading data..", Toast.LENGTH_SHORT).show();
+                            progressbar.setVisibility(GONE);
+                        })
+        );
 
+        compositeDisposable.add(
+                popularObservable.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(popularResults -> {
+                            popularMoviesAdapter.changeItems(popularResults.getResults());
+                            progressbar.setVisibility(GONE);
+                        }, throwable -> {
+                            Toast.makeText(context, "Error loading data..", Toast.LENGTH_SHORT).show();
+                            progressbar.setVisibility(GONE);
+                        })
+        );
 
-        callNowPlaying.enqueue(new Callback<MovieListResponse>() {
-            @Override
-            public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
-                if (response.isSuccessful()) {
-                    nowplayingMoviesAdapter.changeItems(response.body().getResults());
-                } else {
-                    Toast.makeText(context, "Error loading data..", Toast.LENGTH_SHORT).show();
-                }
-                progressbar.setVisibility(GONE);
-            }
+        compositeDisposable.add(
+                topRatedObservable.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(topRatedResults -> {
+                            topratedMoviesAdapter.changeItems(topRatedResults.getResults());
+                            progressbar.setVisibility(GONE);
+                        }, throwable -> {
+                            Toast.makeText(context, "Error loading data..", Toast.LENGTH_SHORT).show();
+                            progressbar.setVisibility(GONE);
+                        })
+        );
 
-            @Override
-            public void onFailure(Call<MovieListResponse> call, Throwable t) {
-                Toast.makeText(context, "Error loading data..", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-        // call to get popular movies
-        callPopular.enqueue(new Callback<MovieListResponse>() {
-            @Override
-            public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
-                if (response.isSuccessful()) {
-                    popularMoviesAdapter.changeItems(response.body().getResults());
-                } else {
-                    Toast.makeText(context, "Error loading data..", Toast.LENGTH_SHORT).show();
-                }
-                progressbar.setVisibility(GONE);
-            }
-
-            @Override
-            public void onFailure(Call<MovieListResponse> call, Throwable t) {
-                Toast.makeText(context, "Error loading data..", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        callTopRated.enqueue(new Callback<MovieListResponse>() {
-            @Override
-            public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
-                if (response.isSuccessful()) {
-                    topratedMoviesAdapter.changeItems(response.body().getResults());
-                } else {
-                    Toast.makeText(context, "Error loading data..", Toast.LENGTH_SHORT).show();
-                }
-                progressbar.setVisibility(GONE);
-            }
-
-            @Override
-            public void onFailure(Call<MovieListResponse> call, Throwable t) {
-                Toast.makeText(context, "Error.. loading data", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        callUpcoming.enqueue(new Callback<MovieListResponse>() {
-            @Override
-            public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
-                if (response.isSuccessful()) {
-                    upcomingMoviesAdapter.changeItems(response.body().getResults());
-                } else {
-                    Toast.makeText(context, "Error loading data..", Toast.LENGTH_SHORT).show();
-                }
-                progressbar.setVisibility(GONE);
-            }
-
-            @Override
-            public void onFailure(Call<MovieListResponse> call, Throwable t) {
-                Toast.makeText(context, "Error loading data..", Toast.LENGTH_SHORT).show();
-            }
-        });
+        compositeDisposable.add(
+                upcomingObservable.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(upcomingResults -> {
+                            upcomingMoviesAdapter.changeItems(upcomingResults.getResults());
+                            progressbar.setVisibility(GONE);
+                        }, throwable -> {
+                            Toast.makeText(context, "Error loading data..", Toast.LENGTH_SHORT).show();
+                            progressbar.setVisibility(GONE);
+                        })
+        );
 
     }
 
+    @Override
+    public void onResume() {
+        getDataFromApi(1);
+        super.onResume();
+    }
 
-//    private void initClickListeners() {
-//
-//        ItemClickSupport.addTo(rvMoviesUpcoming)
-//                .setOnItemClickListener((recyclerView, position, v) -> itemClicked(recyclerView,position));
-//
-//        ItemClickSupport.addTo(rvMoviesNowPlaying)
-//                .setOnItemClickListener((recyclerView, position, v) -> itemClicked(recyclerView,position));
-//
-//        ItemClickSupport.addTo(rvMoviesToprated)
-//                .setOnItemClickListener((recyclerView, position, v) -> itemClicked(recyclerView,position));
-//
-//        ItemClickSupport.addTo(rvMoviesPopular)
-//                .setOnItemClickListener((recyclerView, position, v) -> itemClicked(recyclerView,position));
-//
-//    }
+    @Override
+    public void onPause() {
+        compositeDisposable.dispose();
+        super.onPause();
+    }
 
     private void initViews(Context context) {
         progressbar.setVisibility(View.VISIBLE);
