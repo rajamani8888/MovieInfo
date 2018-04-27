@@ -1,183 +1,184 @@
 package com.sriramr.movieinfo.ui.People.PeopleDetailActivity.Models;
 
-import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-public class PeopleDetailResponse{
+import java.util.List;
 
-	@SerializedName("birthday")
-	private String birthday;
+public class PeopleDetailResponse {
 
-	@SerializedName("also_known_as")
-	private List<String> alsoKnownAs;
+    @SerializedName("birthday")
+    private String birthday;
 
-	@SerializedName("images")
-	private Images images;
+    @SerializedName("also_known_as")
+    private List<String> alsoKnownAs;
 
-	@SerializedName("gender")
-	private int gender;
+    @SerializedName("images")
+    private Images images;
 
-	@SerializedName("imdb_id")
-	private String imdbId;
+    @SerializedName("gender")
+    private int gender;
 
-	@SerializedName("profile_path")
-	private String profilePath;
+    @SerializedName("imdb_id")
+    private String imdbId;
 
-	@SerializedName("biography")
-	private String biography;
+    @SerializedName("profile_path")
+    private String profilePath;
 
-	@SerializedName("deathday")
-	private Object deathday;
+    @SerializedName("biography")
+    private String biography;
 
-	@SerializedName("place_of_birth")
-	private String placeOfBirth;
+    @SerializedName("deathday")
+    private Object deathday;
 
-	@SerializedName("popularity")
-	private double popularity;
+    @SerializedName("place_of_birth")
+    private String placeOfBirth;
 
-	@SerializedName("name")
-	private String name;
+    @SerializedName("popularity")
+    private double popularity;
 
-	@SerializedName("combined_credits")
-	private CombinedCredits combinedCredits;
+    @SerializedName("name")
+    private String name;
 
-	@SerializedName("id")
-	private int id;
+    @SerializedName("combined_credits")
+    private CombinedCredits combinedCredits;
 
-	@SerializedName("adult")
-	private boolean adult;
+    @SerializedName("id")
+    private int id;
 
-	public void setBirthday(String birthday){
-		this.birthday = birthday;
-	}
+    @SerializedName("adult")
+    private boolean adult;
 
-	public String getBirthday(){
-		return birthday;
-	}
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
 
-	public void setAlsoKnownAs(List<String> alsoKnownAs){
-		this.alsoKnownAs = alsoKnownAs;
-	}
+    public String getBirthday() {
+        return birthday;
+    }
 
-	public List<String> getAlsoKnownAs(){
-		return alsoKnownAs;
-	}
+    public void setAlsoKnownAs(List<String> alsoKnownAs) {
+        this.alsoKnownAs = alsoKnownAs;
+    }
 
-	public void setImages(Images images){
-		this.images = images;
-	}
+    public List<String> getAlsoKnownAs() {
+        return alsoKnownAs;
+    }
 
-	public Images getImages(){
-		return images;
-	}
+    public void setImages(Images images) {
+        this.images = images;
+    }
 
-	public void setGender(int gender){
-		this.gender = gender;
-	}
+    public Images getImages() {
+        return images;
+    }
 
-	public int getGender(){
-		return gender;
-	}
+    public void setGender(int gender) {
+        this.gender = gender;
+    }
 
-	public void setImdbId(String imdbId){
-		this.imdbId = imdbId;
-	}
+    public int getGender() {
+        return gender;
+    }
 
-	public String getImdbId(){
-		return imdbId;
-	}
+    public void setImdbId(String imdbId) {
+        this.imdbId = imdbId;
+    }
 
-	public void setProfilePath(String profilePath){
-		this.profilePath = profilePath;
-	}
+    public String getImdbId() {
+        return imdbId;
+    }
 
-	public String getProfilePath(){
-		return profilePath;
-	}
+    public void setProfilePath(String profilePath) {
+        this.profilePath = profilePath;
+    }
 
-	public void setBiography(String biography){
-		this.biography = biography;
-	}
+    public String getProfilePath() {
+        return profilePath;
+    }
 
-	public String getBiography(){
-		return biography;
-	}
+    public void setBiography(String biography) {
+        this.biography = biography;
+    }
 
-	public void setDeathday(Object deathday){
-		this.deathday = deathday;
-	}
+    public String getBiography() {
+        return biography;
+    }
 
-	public Object getDeathday(){
-		return deathday;
-	}
+    public void setDeathday(Object deathday) {
+        this.deathday = deathday;
+    }
 
-	public void setPlaceOfBirth(String placeOfBirth){
-		this.placeOfBirth = placeOfBirth;
-	}
+    public Object getDeathday() {
+        return deathday;
+    }
 
-	public String getPlaceOfBirth(){
-		return placeOfBirth;
-	}
+    public void setPlaceOfBirth(String placeOfBirth) {
+        this.placeOfBirth = placeOfBirth;
+    }
 
-	public void setPopularity(double popularity){
-		this.popularity = popularity;
-	}
+    public String getPlaceOfBirth() {
+        return placeOfBirth;
+    }
 
-	public double getPopularity(){
-		return popularity;
-	}
+    public void setPopularity(double popularity) {
+        this.popularity = popularity;
+    }
 
-	public void setName(String name){
-		this.name = name;
-	}
+    public double getPopularity() {
+        return popularity;
+    }
 
-	public String getName(){
-		return name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setCombinedCredits(CombinedCredits combinedCredits){
-		this.combinedCredits = combinedCredits;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public CombinedCredits getCombinedCredits(){
-		return combinedCredits;
-	}
+    public void setCombinedCredits(CombinedCredits combinedCredits) {
+        this.combinedCredits = combinedCredits;
+    }
 
-	public void setId(int id){
-		this.id = id;
-	}
+    public CombinedCredits getCombinedCredits() {
+        return combinedCredits;
+    }
 
-	public int getId(){
-		return id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setAdult(boolean adult){
-		this.adult = adult;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public boolean isAdult(){
-		return adult;
-	}
+    public void setAdult(boolean adult) {
+        this.adult = adult;
+    }
+
+    public boolean isAdult() {
+        return adult;
+    }
 
 
-	@Override
- 	public String toString(){
-		return 
-			"PeopleDetailResponse{" + 
-			"birthday = '" + birthday + '\'' + 
-			",also_known_as = '" + alsoKnownAs + '\'' + 
-			",images = '" + images + '\'' + 
-			",gender = '" + gender + '\'' + 
-			",imdb_id = '" + imdbId + '\'' + 
-			",profile_path = '" + profilePath + '\'' + 
-			",biography = '" + biography + '\'' + 
-			",deathday = '" + deathday + '\'' + 
-			",place_of_birth = '" + placeOfBirth + '\'' + 
-			",popularity = '" + popularity + '\'' + 
-			",name = '" + name + '\'' + 
-			",combined_credits = '" + combinedCredits + '\'' + 
-			",id = '" + id + '\'' + 
-			",adult = '" + adult + '\'' +
-			"}";
-		}
+    @Override
+    public String toString() {
+        return
+                "PeopleDetailResponse{" +
+                        "birthday = '" + birthday + '\'' +
+                        ",also_known_as = '" + alsoKnownAs + '\'' +
+                        ",images = '" + images + '\'' +
+                        ",gender = '" + gender + '\'' +
+                        ",imdb_id = '" + imdbId + '\'' +
+                        ",profile_path = '" + profilePath + '\'' +
+                        ",biography = '" + biography + '\'' +
+                        ",deathday = '" + deathday + '\'' +
+                        ",place_of_birth = '" + placeOfBirth + '\'' +
+                        ",popularity = '" + popularity + '\'' +
+                        ",name = '" + name + '\'' +
+                        ",combined_credits = '" + combinedCredits + '\'' +
+                        ",id = '" + id + '\'' +
+                        ",adult = '" + adult + '\'' +
+                        "}";
+    }
 }

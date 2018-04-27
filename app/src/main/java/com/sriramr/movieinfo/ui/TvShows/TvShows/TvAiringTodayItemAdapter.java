@@ -20,7 +20,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-
 public class TvAiringTodayItemAdapter extends RecyclerView.Adapter<TvAiringTodayItemAdapter.ViewHolder> {
 
     private List<TvShow> tvShows;
@@ -47,27 +46,24 @@ public class TvAiringTodayItemAdapter extends RecyclerView.Adapter<TvAiringToday
         String title = show.getName();
         String imagepath = show.getPosterPath();
 
-        String imageUrl = AppConstants.IMAGE_BASE_URL + AppConstants.POSTER_SIZE + imagepath ;
+        String imageUrl = AppConstants.IMAGE_BASE_URL + AppConstants.POSTER_SIZE + imagepath;
         String ratings = String.valueOf(show.getVoteAverage());
         Timber.v(imagepath);
         Timber.v(imageUrl);
-        holder.bind(title,imageUrl,ratings);
+        holder.bind(title, imageUrl, ratings);
     }
 
     @Override
     public int getItemCount() {
-        if (tvShows.isEmpty()){
-            return 0;
-        }
-        return 5;
+        return tvShows.isEmpty() ? 0 : 5;
     }
 
-    public void changeItems(List<TvShow> shows){
+    public void changeItems(List<TvShow> shows) {
         this.tvShows = shows;
         notifyDataSetChanged();
     }
 
-    public List<TvShow> getMovies(){
+    public List<TvShow> getMovies() {
         return tvShows;
     }
 
@@ -84,11 +80,11 @@ public class TvAiringTodayItemAdapter extends RecyclerView.Adapter<TvAiringToday
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
         }
 
-        public void bind(String title, String imageUrl, String ratings){
+        public void bind(String title, String imageUrl, String ratings) {
             Picasso.with(context).load(imageUrl)
                     .centerCrop()
                     .fit()
@@ -107,7 +103,6 @@ public class TvAiringTodayItemAdapter extends RecyclerView.Adapter<TvAiringToday
             mClickListener.onItemClicked(show);
         }
     }
-
 
 
 }

@@ -1,26 +1,27 @@
 package com.sriramr.movieinfo.ui.TvShows.TvShowsDetail.Model;
 
-import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-public class Videos{
+import java.util.List;
 
-	@SerializedName("results")
-	private List<Object> results;
+public class Videos {
 
-	public void setResults(List<Object> results){
-		this.results = results;
-	}
+    @SerializedName("results")
+    private List<Object> results;
 
-	public List<Object> getResults(){
-		return results;
-	}
+    public void setResults(List<Object> results) {
+        this.results = results;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"Videos{" + 
-			"results = '" + results + '\'' + 
-			"}";
-		}
+    public List<Object> getResults() {
+        return results;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "Videos{" +
+                        "results = '" + results + '\'' +
+                        "}";
+    }
 }

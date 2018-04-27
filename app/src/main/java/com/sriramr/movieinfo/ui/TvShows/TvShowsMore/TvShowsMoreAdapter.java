@@ -1,16 +1,12 @@
 package com.sriramr.movieinfo.ui.TvShows.TvShowsMore;
 
 import android.content.Context;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.sriramr.movieinfo.R;
@@ -29,7 +25,7 @@ public class TvShowsMoreAdapter extends RecyclerView.Adapter<TvShowsMoreAdapter.
     private Context context;
     private TvShowItemClickListener mClickListener;
 
-    public TvShowsMoreAdapter(Context context, TvShowItemClickListener clickListener){
+    public TvShowsMoreAdapter(Context context, TvShowItemClickListener clickListener) {
         shows = new ArrayList<>();
         this.mClickListener = clickListener;
         this.context = context;
@@ -39,7 +35,7 @@ public class TvShowsMoreAdapter extends RecyclerView.Adapter<TvShowsMoreAdapter.
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
         View v = LayoutInflater.from(context)
-                .inflate(R.layout.item_movie_long,parent,false);
+                .inflate(R.layout.item_movie_long, parent, false);
         return new ViewHolder(v);
     }
 
@@ -56,33 +52,30 @@ public class TvShowsMoreAdapter extends RecyclerView.Adapter<TvShowsMoreAdapter.
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(holder.image);
 
-
-        holder.overflow.setOnClickListener(v -> showPopupMenu(holder.overflow,holder.getAdapterPosition()));
+        holder.overflow.setOnClickListener(v -> showPopupMenu(holder.overflow, holder.getAdapterPosition()));
     }
 
     private void showPopupMenu(View view, int position) {
-        mClickListener.onPopupMenuClicked(view,position);
+        mClickListener.onPopupMenuClicked(view, position);
     }
 
-    public interface TvShowItemClickListener{
-        void onShowItemClicked(TvShow show);
-        void onPopupMenuClicked(View view,int position);
-    }
-
-    void setData(List<TvShow> shows){
+    void setData(List<TvShow> shows) {
         this.shows = shows;
         notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        if (shows == null){
-            return 0;
-        }
         return shows.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public interface TvShowItemClickListener {
+        void onShowItemClicked(TvShow show);
+
+        void onPopupMenuClicked(View view, int position);
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.movie_list_thumbnail)
         ImageView image;
@@ -96,10 +89,9 @@ public class TvShowsMoreAdapter extends RecyclerView.Adapter<TvShowsMoreAdapter.
         @BindView(R.id.movie_list_overflow)
         ImageView overflow;
 
-
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
         }
 
@@ -111,16 +103,4 @@ public class TvShowsMoreAdapter extends RecyclerView.Adapter<TvShowsMoreAdapter.
         }
     }
 
-    private class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
-        int position;
-        public MyMenuItemClickListener(int position) {
-            this.position = position;
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem item) {
-
-            return false;
-        }
-    }
 }

@@ -3,8 +3,6 @@ package com.sriramr.movieinfo.Network;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.jakewharton.picasso.OkHttp3Downloader;
-
 import java.io.File;
 
 import okhttp3.Cache;
@@ -20,32 +18,31 @@ import timber.log.Timber;
 
 public class NetworkService {
 
-    public static MovieService getService(Context context){
+    public static Retrofit retrofit;
 
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
-            @Override
-            public void log(@NonNull String message) {
-                Timber.i(message);
-            }
-        });
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+    public static MovieService getService(Context context) {
 
-        File cacheFile = new File(context.getCacheDir(), "okhttp-cahce");
+        if (retrofit == null) {
+            HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(message -> Timber.i(message));
 
-        Cache cache = new Cache(cacheFile, 10*1000*1000 ); // 10 MB Cache
+            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(loggingInterceptor)
-                .cache(cache)
-                .build();
+            File cacheFile = new File(context.getCacheDir(), "okhttp-cahce");
 
-        OkHttp3Downloader okHttp3Downloader = new OkHttp3Downloader(client);
+            Cache cache = new Cache(cacheFile, 10 * 1000 * 1000); // 10 MB Cache
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("https://api.themoviedb.org/3/")
-                .client(client)
-                .build();
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .addInterceptor(loggingInterceptor)
+                    .cache(cache)
+                    .build();
+
+            retrofit = new Retrofit.Builder()
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .baseUrl("https://api.themoviedb.org/3/")
+                    .client(client)
+                    .build();
+
+        }
 
         return retrofit.create(MovieService.class);
 

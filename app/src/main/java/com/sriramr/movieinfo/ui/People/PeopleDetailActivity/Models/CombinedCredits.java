@@ -1,26 +1,27 @@
 package com.sriramr.movieinfo.ui.People.PeopleDetailActivity.Models;
 
-import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-public class CombinedCredits{
+import java.util.List;
 
-	@SerializedName("cast")
-	private List<CastItem> cast;
+public class CombinedCredits {
 
-	public void setCast(List<CastItem> cast){
-		this.cast = cast;
-	}
+    @SerializedName("cast")
+    private List<CastItem> cast;
 
-	public List<CastItem> getCast(){
-		return cast;
-	}
+    public void setCast(List<CastItem> cast) {
+        this.cast = cast;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"CombinedCredits{" + 
-			"cast = '" + cast + '\'' + 
-			"}";
-		}
+    public List<CastItem> getCast() {
+        return cast;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "CombinedCredits{" +
+                        "cast = '" + cast + '\'' +
+                        "}";
+    }
 }

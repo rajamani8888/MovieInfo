@@ -9,13 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.sriramr.movieinfo.ui.Movies.MovieDetailActivity.Models.Recommendation;
 import com.sriramr.movieinfo.R;
+import com.sriramr.movieinfo.ui.Movies.MovieDetailActivity.Models.Recommendation;
 import com.sriramr.movieinfo.utils.AppConstants;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,7 +25,7 @@ public class MovieDetailRecommendationsAdapter extends RecyclerView.Adapter<Movi
     private Context context;
     private RecommendationClickListener mClickListener;
 
-    public MovieDetailRecommendationsAdapter(Context context, RecommendationClickListener clickListener){
+    public MovieDetailRecommendationsAdapter(Context context, RecommendationClickListener clickListener) {
         this.context = context;
         this.mClickListener = clickListener;
         recommendations = new ArrayList<>();
@@ -47,20 +46,20 @@ public class MovieDetailRecommendationsAdapter extends RecyclerView.Adapter<Movi
 
     @Override
     public int getItemCount() {
-        if (recommendations.isEmpty())return 0;
+        if (recommendations.isEmpty()) return 0;
         return 8;
     }
 
-    public void setRecommendations(List<Recommendation> recommendations){
+    public void setRecommendations(List<Recommendation> recommendations) {
         this.recommendations = recommendations;
         notifyDataSetChanged();
     }
 
-    public interface RecommendationClickListener{
+    public interface RecommendationClickListener {
         void onRecommendationsItemClick(Recommendation recommendation);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.cast_image)
         ImageView image;
 
@@ -69,13 +68,13 @@ public class MovieDetailRecommendationsAdapter extends RecyclerView.Adapter<Movi
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
         }
 
-        void bind(Recommendation recommendations){
+        void bind(Recommendation recommendations) {
 
-            Picasso.with(context).load(AppConstants.IMAGE_BASE_URL+AppConstants.POSTER_SIZE+recommendations.getPosterPath())
+            Picasso.with(context).load(AppConstants.IMAGE_BASE_URL + AppConstants.POSTER_SIZE + recommendations.getPosterPath())
                     .centerCrop().fit().into(image);
             title.setText(recommendations.getTitle());
         }

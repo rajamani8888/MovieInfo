@@ -1,6 +1,5 @@
 package com.sriramr.movieinfo.ui.Discover.DiscoverActivity;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,25 +13,22 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.sriramr.movieinfo.R;
+import com.sriramr.movieinfo.ui.Discover.DiscoverDetailActivity.DiscoverDetailActivity;
 import com.sriramr.movieinfo.utils.AppConstants;
 import com.sriramr.movieinfo.utils.Utils;
-import com.sriramr.movieinfo.ui.Discover.DiscoverDetailActivity.DiscoverDetailActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-
 public class DiscoverShowsFragment extends Fragment implements DiscoverAdapter.DiscoverMovieClickListener {
-
-    private static SparseArray<String> genreShowsArray;
 
     @BindView(R.id.discover_rv)
     RecyclerView discoverRv;
 
-    Unbinder unbinder;
-
-    DiscoverAdapter discoverAdapter;
+    private Unbinder unbinder;
+    private DiscoverAdapter discoverAdapter;
+    private static SparseArray<String> genreShowsArray;
 
     public static DiscoverShowsFragment newInstance() {
         return new DiscoverShowsFragment();
@@ -57,14 +53,6 @@ public class DiscoverShowsFragment extends Fragment implements DiscoverAdapter.D
         discoverRv.setAdapter(discoverAdapter);
         discoverAdapter.setGenreList(genreShowsArray);
 
-//        ItemClickSupport.addTo(discoverRv)
-//                .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
-//                    @Override
-//                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-//
-//                        }
-//                });
-
     }
 
     @Override
@@ -84,6 +72,6 @@ public class DiscoverShowsFragment extends Fragment implements DiscoverAdapter.D
         i.putExtra(AppConstants.DISCOVER_GENRE_NAME, genreName);
         startActivity(i);
         Toast.makeText(getActivity(), "Clicked " + genreShowsArray.get(genreShowsArray.keyAt(position)), Toast.LENGTH_SHORT).show();
-
     }
+
 }

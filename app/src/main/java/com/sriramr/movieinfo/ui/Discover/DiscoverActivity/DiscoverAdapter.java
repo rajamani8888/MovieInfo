@@ -19,7 +19,8 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.ViewHo
     private SparseArray<String> genreList;
     private Context context;
     private DiscoverMovieClickListener mListener;
-    public DiscoverAdapter(Context context, DiscoverMovieClickListener listener){
+
+    public DiscoverAdapter(Context context, DiscoverMovieClickListener listener) {
         this.context = context;
         mListener = listener;
         genreList = new SparseArray<>();
@@ -28,7 +29,7 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.ViewHo
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
-        View v  = LayoutInflater.from(context).inflate(R.layout.item_discover,parent,false);
+        View v = LayoutInflater.from(context).inflate(R.layout.item_discover, parent, false);
         return new ViewHolder(v);
     }
 
@@ -44,12 +45,12 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.ViewHo
         return genreList.size();
     }
 
-    public void setGenreList(SparseArray<String> genreList){
+    public void setGenreList(SparseArray<String> genreList) {
         this.genreList = genreList;
         notifyDataSetChanged();
     }
 
-    public interface DiscoverMovieClickListener{
+    public interface DiscoverMovieClickListener {
         void onClickItem(int position);
     }
 
@@ -62,11 +63,11 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.ViewHo
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
         }
 
-        public void bind(String title){
+        public void bind(String title) {
             this.title.setText(title);
         }
 

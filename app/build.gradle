@@ -59,7 +59,6 @@ dependencies {
     //gson
     compile 'com.google.code.gson:gson:2.8.2'
 
-
     //parceler
     compile 'org.parceler:parceler-api:1.1.9'
     annotationProcessor 'org.parceler:parceler:1.1.9'
@@ -67,7 +66,6 @@ dependencies {
     // room
     implementation "android.arch.persistence.room:runtime:1.0.0"
     annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
-
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {

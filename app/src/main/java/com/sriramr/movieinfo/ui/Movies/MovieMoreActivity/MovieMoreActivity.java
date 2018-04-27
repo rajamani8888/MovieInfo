@@ -15,12 +15,12 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.sriramr.movieinfo.Network.MovieService;
 import com.sriramr.movieinfo.Network.NetworkService;
+import com.sriramr.movieinfo.R;
 import com.sriramr.movieinfo.ui.Movies.MovieDetailActivity.MovieDetailActivity;
 import com.sriramr.movieinfo.ui.Movies.MovieListActivity.Models.Movie;
 import com.sriramr.movieinfo.ui.Movies.MovieListActivity.Models.MovieListResponse;
-import com.sriramr.movieinfo.Network.MovieService;
-import com.sriramr.movieinfo.R;
 import com.sriramr.movieinfo.utils.AppConstants;
 import com.sriramr.movieinfo.utils.EndlessRecyclerViewScrollListener;
 
@@ -91,7 +91,7 @@ public class MovieMoreActivity extends AppCompatActivity implements MovieListAda
         rvMovieMore.setLayoutManager(layoutManager);
         rvMovieMore.setHasFixedSize(true);
         rvMovieMore.setItemAnimator(new DefaultItemAnimator());
-        movieListAdapter = new MovieListAdapter(this,this);
+        movieListAdapter = new MovieListAdapter(this, this);
         rvMovieMore.setAdapter(movieListAdapter);
 
         getDataFromApi(page);
@@ -112,16 +112,16 @@ public class MovieMoreActivity extends AppCompatActivity implements MovieListAda
     private void getDataFromApi(int page) {
 
         switch (this.movieTag) {
-            case AppConstants.TAG_NOW_PLAYING_MOVIES:
+            case AppConstants.MOVIES_TAG_NOW_PLAYING:
                 movieCall = movieService.getNowPlayingMovies(page, AppConstants.API_KEY);
                 break;
-            case AppConstants.TAG_POPULAR_MOVIES:
+            case AppConstants.MOVIES_TAG_POPULAR:
                 movieCall = movieService.getPopularMovies(page, AppConstants.API_KEY);
                 break;
-            case AppConstants.TAG_TOP_RATED_MOVIES:
+            case AppConstants.MOVIES_TAG_TOP_RATED:
                 movieCall = movieService.getTopRatedMovies(page, AppConstants.API_KEY);
                 break;
-            case AppConstants.TAG_UPCOMING_MOVIES:
+            case AppConstants.MOVIES_TAG_UPCOMING:
                 movieCall = movieService.getUpcomingMovies(page, AppConstants.API_KEY);
                 break;
             default:
@@ -167,13 +167,13 @@ public class MovieMoreActivity extends AppCompatActivity implements MovieListAda
         inflater.inflate(R.menu.menu_movie, popup.getMenu());
 
         popup.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()){
+            switch (item.getItemId()) {
                 case R.id.movie_watched:
-                    Toast.makeText(MovieMoreActivity.this, "Added "+movies.get(position).getTitle()+" to watched", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MovieMoreActivity.this, "Added " + movies.get(position).getTitle() + " to watched", Toast.LENGTH_SHORT).show();
                     return true;
 
                 case R.id.movie_watch_later:
-                    Toast.makeText(MovieMoreActivity.this, "Added "+movies.get(position).getTitle()+" to watch later", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MovieMoreActivity.this, "Added " + movies.get(position).getTitle() + " to watch later", Toast.LENGTH_SHORT).show();
                     return true;
                 default:
             }
@@ -183,7 +183,6 @@ public class MovieMoreActivity extends AppCompatActivity implements MovieListAda
 
         popup.show();
     }
-
 
 
 }

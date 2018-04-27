@@ -24,7 +24,7 @@ public class TvShowSeasonsAdapter extends RecyclerView.Adapter<TvShowSeasonsAdap
     private List<Seasons> seasons;
     private Context context;
 
-    public TvShowSeasonsAdapter(Context context){
+    public TvShowSeasonsAdapter(Context context) {
         this.context = context;
         seasons = new ArrayList<>();
     }
@@ -32,7 +32,7 @@ public class TvShowSeasonsAdapter extends RecyclerView.Adapter<TvShowSeasonsAdap
     @Override
     public TvShowSeasonsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
-        View v = LayoutInflater.from(context).inflate(R.layout.item_cast,parent,false);
+        View v = LayoutInflater.from(context).inflate(R.layout.item_cast, parent, false);
         return new ViewHolder(v);
     }
 
@@ -44,10 +44,10 @@ public class TvShowSeasonsAdapter extends RecyclerView.Adapter<TvShowSeasonsAdap
 
     @Override
     public int getItemCount() {
-        return seasons.isEmpty() ?0 :seasons.size();
+        return seasons.isEmpty() ? 0 : seasons.size();
     }
 
-    public void setSeasons(List<Seasons> seasons){
+    public void setSeasons(List<Seasons> seasons) {
         this.seasons = seasons;
         notifyDataSetChanged();
     }
@@ -61,11 +61,11 @@ public class TvShowSeasonsAdapter extends RecyclerView.Adapter<TvShowSeasonsAdap
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
 
-        void bind(Seasons seasons){
-            Picasso.with(context).load(AppConstants.IMAGE_BASE_URL+AppConstants.POSTER_SIZE+seasons.getPosterPath())
+        void bind(Seasons seasons) {
+            Picasso.with(context).load(AppConstants.IMAGE_BASE_URL + AppConstants.POSTER_SIZE + seasons.getPosterPath())
                     .centerCrop()
                     .fit()
                     .into(castImage);

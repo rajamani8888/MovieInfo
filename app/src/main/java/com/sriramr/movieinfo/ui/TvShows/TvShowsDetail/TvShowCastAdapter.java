@@ -25,7 +25,7 @@ public class TvShowCastAdapter extends RecyclerView.Adapter<TvShowCastAdapter.Vi
     private Context context;
     private CastClickListener mClickListener;
 
-    public TvShowCastAdapter(Context context, CastClickListener castClickListener){
+    public TvShowCastAdapter(Context context, CastClickListener castClickListener) {
         this.context = context;
         mClickListener = castClickListener;
         cast = new ArrayList<>();
@@ -34,7 +34,7 @@ public class TvShowCastAdapter extends RecyclerView.Adapter<TvShowCastAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
-        View v = LayoutInflater.from(context).inflate(R.layout.item_cast,parent,false);
+        View v = LayoutInflater.from(context).inflate(R.layout.item_cast, parent, false);
         return new ViewHolder(v);
     }
 
@@ -44,16 +44,16 @@ public class TvShowCastAdapter extends RecyclerView.Adapter<TvShowCastAdapter.Vi
         holder.bind(c);
     }
 
-    public interface CastClickListener{
+    public interface CastClickListener {
         void onCastClicked(Cast cast);
     }
 
     @Override
     public int getItemCount() {
-        return cast.isEmpty() ?0 :cast.size();
+        return cast.isEmpty() ? 0 : cast.size();
     }
 
-    public void setCast(List<Cast> cast){
+    public void setCast(List<Cast> cast) {
         this.cast = cast;
         notifyDataSetChanged();
     }
@@ -67,12 +67,12 @@ public class TvShowCastAdapter extends RecyclerView.Adapter<TvShowCastAdapter.Vi
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
         }
 
-        void bind(Cast c){
-            Picasso.with(context).load(AppConstants.IMAGE_BASE_URL+AppConstants.POSTER_SIZE+c.getProfilePath())
+        void bind(Cast c) {
+            Picasso.with(context).load(AppConstants.IMAGE_BASE_URL + AppConstants.POSTER_SIZE + c.getProfilePath())
                     .centerCrop()
                     .fit()
                     .into(castImage);

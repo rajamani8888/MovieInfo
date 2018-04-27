@@ -1,38 +1,39 @@
 package com.sriramr.movieinfo.ui.Movies.MovieDetailActivity.Models;
 
-import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-public class Credits{
+import java.util.List;
 
-	@SerializedName("cast")
-	private List<Cast> cast;
+public class Credits {
 
-	@SerializedName("crew")
-	private List<Crew> crew;
+    @SerializedName("cast")
+    private List<Cast> cast;
 
-	public void setCast(List<Cast> cast){
-		this.cast = cast;
-	}
+    @SerializedName("crew")
+    private List<Crew> crew;
 
-	public List<Cast> getCast(){
-		return cast;
-	}
+    public void setCast(List<Cast> cast) {
+        this.cast = cast;
+    }
 
-	public void setCrew(List<Crew> crew){
-		this.crew = crew;
-	}
+    public List<Cast> getCast() {
+        return cast;
+    }
 
-	public List<Crew> getCrew(){
-		return crew;
-	}
+    public void setCrew(List<Crew> crew) {
+        this.crew = crew;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"Credits{" + 
-			"cast = '" + cast + '\'' + 
-			",crew = '" + crew + '\'' + 
-			"}";
-		}
+    public List<Crew> getCrew() {
+        return crew;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "Credits{" +
+                        "cast = '" + cast + '\'' +
+                        ",crew = '" + crew + '\'' +
+                        "}";
+    }
 }

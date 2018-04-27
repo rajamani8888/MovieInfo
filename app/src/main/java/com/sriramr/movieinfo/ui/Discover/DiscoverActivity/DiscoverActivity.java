@@ -3,9 +3,6 @@ package com.sriramr.movieinfo.ui.Discover.DiscoverActivity;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -28,7 +25,7 @@ public class DiscoverActivity extends AppCompatActivity {
     @BindView(R.id.container)
     ViewPager viewPager;
 
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private DiscoverPagerAdapter mSectionsPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +38,7 @@ public class DiscoverActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Discover");
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter = new DiscoverPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
         viewPager.setAdapter(mSectionsPagerAdapter);
@@ -49,9 +46,7 @@ public class DiscoverActivity extends AppCompatActivity {
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
 
-
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -72,7 +67,7 @@ public class DiscoverActivity extends AppCompatActivity {
             return true;
         }
 
-        if (id == android.R.id.home){
+        if (id == android.R.id.home) {
             finish();
             return true;
         }
@@ -80,43 +75,4 @@ public class DiscoverActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            switch (position){
-                case 0:
-                    return DiscoverMoviesFragment.newInstance();
-                case 1:
-                    return DiscoverShowsFragment.newInstance();
-                default:
-                    // we wont reach here, but if we do, better to show something
-                    return DiscoverMoviesFragment.newInstance();
-            }
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position){
-                case 0 : return "Movies";
-                case 1 : return "Tv Shows";
-                default: return "Movies";
-            }
-        }
-
-        @Override
-        public int getCount() {
-            // Show 2 total pages.
-            return 2;
-        }
-    }
 }

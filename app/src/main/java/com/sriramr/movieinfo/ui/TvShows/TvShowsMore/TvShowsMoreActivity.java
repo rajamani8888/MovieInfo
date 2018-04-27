@@ -78,11 +78,11 @@ public class TvShowsMoreActivity extends AppCompatActivity implements TvShowsMor
 
         pbMoreTvShow.setVisibility(View.VISIBLE);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this,3);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
         rvTvShowMore.setLayoutManager(layoutManager);
         rvTvShowMore.setHasFixedSize(true);
         rvTvShowMore.setItemAnimator(new DefaultItemAnimator());
-        showsMoreAdapter = new TvShowsMoreAdapter(this,this);
+        showsMoreAdapter = new TvShowsMoreAdapter(this, this);
         rvTvShowMore.setAdapter(showsMoreAdapter);
 
         getDataFromApi(page);
@@ -98,38 +98,36 @@ public class TvShowsMoreActivity extends AppCompatActivity implements TvShowsMor
 
         rvTvShowMore.addOnScrollListener(listener);
 
-
     }
 
     private void getDataFromApi(int page) {
         Call<TvShowsResponse> call;
-        final String API_KEY = AppConstants.API_KEY;
-        switch (this.movieTag){
+        switch (this.movieTag) {
             case AppConstants.TAG_TV_ON_THE_AIR:
-                call = service.getOnTheAirTvShows(API_KEY,page);
+                call = service.getOnTheAirTvShows(AppConstants.API_KEY, page);
                 break;
             case AppConstants.TAG_TV_AIRING_TODAY:
-                call = service.getAiringTodayTvShows(API_KEY,page);
+                call = service.getAiringTodayTvShows(AppConstants.API_KEY, page);
                 break;
             case AppConstants.TAG_TV_POPULAR:
-                call = service.getPopularTv(API_KEY,page);
+                call = service.getPopularTv(AppConstants.API_KEY, page);
                 break;
             case AppConstants.TAG_TV_TOP_RATED:
-                call = service.getTopRatedTv(API_KEY,page);
+                call = service.getTopRatedTv(AppConstants.API_KEY, page);
                 break;
             default:
-                call = service.getTopRatedTv(API_KEY,page);
+                call = service.getTopRatedTv(AppConstants.API_KEY, page);
                 break;
         }
 
         call.enqueue(new Callback<TvShowsResponse>() {
             @Override
             public void onResponse(Call<TvShowsResponse> call, Response<TvShowsResponse> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     showList.addAll(response.body().getResults());
                     showsMoreAdapter.setData(showList);
                     pbMoreTvShow.setVisibility(View.GONE);
-                }else{
+                } else {
                     Timber.e(response.message());
                     Toast.makeText(TvShowsMoreActivity.this, "Error. Try again", Toast.LENGTH_SHORT).show();
                     finish();
@@ -151,8 +149,8 @@ public class TvShowsMoreActivity extends AppCompatActivity implements TvShowsMor
         int showId = show.getId();
         String title = show.getName();
         Intent i = new Intent(TvShowsMoreActivity.this, TvShowDetailActivity.class);
-        i.putExtra(AppConstants.TV_SHOW_ID,String.valueOf(showId));
-        i.putExtra(AppConstants.TV_SHOW_TITLE,title);
+        i.putExtra(AppConstants.TV_SHOW_ID, String.valueOf(showId));
+        i.putExtra(AppConstants.TV_SHOW_TITLE, title);
         startActivity(i);
     }
 
@@ -165,14 +163,14 @@ public class TvShowsMoreActivity extends AppCompatActivity implements TvShowsMor
         popup.show();
     }
 
-    public boolean popupClick(MenuItem item, int position){
-        switch (item.getItemId()){
+    public boolean popupClick(MenuItem item, int position) {
+        switch (item.getItemId()) {
             case R.id.movie_watched:
-                Toast.makeText(this, "Added "+showList.get(position).getName()+" to watched", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Added " + showList.get(position).getName() + " to watched", Toast.LENGTH_SHORT).show();
                 return true;
 
             case R.id.movie_watch_later:
-                Toast.makeText(this, "Added "+showList.get(position).getName()+" to watch later", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Added " + showList.get(position).getName() + " to watch later", Toast.LENGTH_SHORT).show();
                 return true;
             default:
         }

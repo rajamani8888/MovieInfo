@@ -1,6 +1,5 @@
 package com.sriramr.movieinfo.ui.Discover.DiscoverActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,26 +11,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import com.sriramr.movieinfo.R;
+import com.sriramr.movieinfo.ui.Discover.DiscoverDetailActivity.DiscoverDetailActivity;
 import com.sriramr.movieinfo.utils.AppConstants;
 import com.sriramr.movieinfo.utils.Utils;
-import com.sriramr.movieinfo.ui.Discover.DiscoverDetailActivity.DiscoverDetailActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-
 public class DiscoverMoviesFragment extends Fragment implements DiscoverAdapter.DiscoverMovieClickListener {
-
-    private static SparseArray<String> genreMoviesArray;
 
     @BindView(R.id.discover_rv)
     RecyclerView discoverRv;
 
-    Unbinder unbinder;
-
-    DiscoverAdapter discoverAdapter;
+    private Unbinder unbinder;
+    private DiscoverAdapter discoverAdapter;
+    private static SparseArray<String> genreMoviesArray;
 
     public static DiscoverMoviesFragment newInstance() {
         return new DiscoverMoviesFragment();
@@ -48,10 +45,10 @@ public class DiscoverMoviesFragment extends Fragment implements DiscoverAdapter.
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        RecyclerView.LayoutManager discoverLayoutManager = new GridLayoutManager(getContext(),2);
+        RecyclerView.LayoutManager discoverLayoutManager = new GridLayoutManager(getContext(), 2);
         discoverRv.setLayoutManager(discoverLayoutManager);
 
-        discoverAdapter = new DiscoverAdapter(getContext(),this);
+        discoverAdapter = new DiscoverAdapter(getContext(), this);
         discoverRv.setAdapter(discoverAdapter);
 
         discoverAdapter.setGenreList(genreMoviesArray);
@@ -70,10 +67,10 @@ public class DiscoverMoviesFragment extends Fragment implements DiscoverAdapter.
         String genreName = genreMoviesArray.get(genreId);
         String genreType = AppConstants.DISCOVER_MOVIE;
         Intent i = new Intent(getActivity(), DiscoverDetailActivity.class);
-        i.putExtra(AppConstants.DISCOVER_GENRE_ID,String.valueOf(genreId));
-        i.putExtra(AppConstants.DISCOVER_GENRE_TYPE,genreType);
-        i.putExtra(AppConstants.DISCOVER_GENRE_NAME,genreName);
+        i.putExtra(AppConstants.DISCOVER_GENRE_ID, String.valueOf(genreId));
+        i.putExtra(AppConstants.DISCOVER_GENRE_TYPE, genreType);
+        i.putExtra(AppConstants.DISCOVER_GENRE_NAME, genreName);
         startActivity(i);
-        Toast.makeText(getActivity(), "Clicked "+ genreMoviesArray.get(genreMoviesArray.keyAt(position)), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Clicked " + genreMoviesArray.get(genreMoviesArray.keyAt(position)), Toast.LENGTH_SHORT).show();
     }
 }

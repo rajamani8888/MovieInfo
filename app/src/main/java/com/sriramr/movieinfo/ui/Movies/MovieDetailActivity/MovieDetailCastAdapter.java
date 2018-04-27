@@ -10,8 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.sriramr.movieinfo.ui.Movies.MovieDetailActivity.Models.Cast;
 import com.sriramr.movieinfo.R;
+import com.sriramr.movieinfo.ui.Movies.MovieDetailActivity.Models.Cast;
 import com.sriramr.movieinfo.utils.AppConstants;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class MovieDetailCastAdapter extends RecyclerView.Adapter<MovieDetailCast
     private Context context;
     private CastItemClickListener mClickListener;
 
-    public  MovieDetailCastAdapter(Context context, CastItemClickListener castItemClickListener){
+    public MovieDetailCastAdapter(Context context, CastItemClickListener castItemClickListener) {
         mClickListener = castItemClickListener;
         cast = new ArrayList<>();
         this.context = context;
@@ -34,7 +34,7 @@ public class MovieDetailCastAdapter extends RecyclerView.Adapter<MovieDetailCast
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(context).inflate(R.layout.item_cast,parent,false);
+        View v = LayoutInflater.from(context).inflate(R.layout.item_cast, parent, false);
         return new ViewHolder(v);
     }
 
@@ -46,16 +46,16 @@ public class MovieDetailCastAdapter extends RecyclerView.Adapter<MovieDetailCast
 
     @Override
     public int getItemCount() {
-        if (cast.isEmpty())return 0;
+        if (cast.isEmpty()) return 0;
         return 8;
     }
 
-    public void setCast(List<Cast> cast){
+    public void setCast(List<Cast> cast) {
         this.cast = cast;
         notifyDataSetChanged();
     }
 
-    public interface CastItemClickListener{
+    public interface CastItemClickListener {
         void onCastItemClick(Cast cast);
     }
 
@@ -69,13 +69,13 @@ public class MovieDetailCastAdapter extends RecyclerView.Adapter<MovieDetailCast
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
         }
 
-        void bind(Cast cast){
+        void bind(Cast cast) {
             Picasso.with(context)
-                    .load(AppConstants.IMAGE_BASE_URL+AppConstants.POSTER_SIZE+cast.getProfilePath())
+                    .load(AppConstants.IMAGE_BASE_URL + AppConstants.POSTER_SIZE + cast.getProfilePath())
                     .centerCrop().fit().into(image);
 
             title.setText(cast.getName());

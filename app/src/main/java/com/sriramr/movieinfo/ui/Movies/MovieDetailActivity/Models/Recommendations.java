@@ -1,62 +1,63 @@
 package com.sriramr.movieinfo.ui.Movies.MovieDetailActivity.Models;
 
-import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-public class Recommendations{
+import java.util.List;
 
-	@SerializedName("page")
-	private int page;
+public class Recommendations {
 
-	@SerializedName("total_pages")
-	private int totalPages;
+    @SerializedName("page")
+    private int page;
 
-	@SerializedName("results")
-	private List<Recommendation> results;
+    @SerializedName("total_pages")
+    private int totalPages;
 
-	@SerializedName("total_results")
-	private int totalResults;
+    @SerializedName("results")
+    private List<Recommendation> results;
 
-	public void setPage(int page){
-		this.page = page;
-	}
+    @SerializedName("total_results")
+    private int totalResults;
 
-	public int getPage(){
-		return page;
-	}
+    public void setPage(int page) {
+        this.page = page;
+    }
 
-	public void setTotalPages(int totalPages){
-		this.totalPages = totalPages;
-	}
+    public int getPage() {
+        return page;
+    }
 
-	public int getTotalPages(){
-		return totalPages;
-	}
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
+    }
 
-	public void setResults(List<Recommendation> results){
-		this.results = results;
-	}
+    public int getTotalPages() {
+        return totalPages;
+    }
 
-	public List<Recommendation> getResults(){
-		return results;
-	}
+    public void setResults(List<Recommendation> results) {
+        this.results = results;
+    }
 
-	public void setTotalResults(int totalResults){
-		this.totalResults = totalResults;
-	}
+    public List<Recommendation> getResults() {
+        return results;
+    }
 
-	public int getTotalResults(){
-		return totalResults;
-	}
+    public void setTotalResults(int totalResults) {
+        this.totalResults = totalResults;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"Recommendations{" + 
-			"page = '" + page + '\'' + 
-			",total_pages = '" + totalPages + '\'' + 
-			",results = '" + results + '\'' + 
-			",total_results = '" + totalResults + '\'' + 
-			"}";
-		}
+    public int getTotalResults() {
+        return totalResults;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "Recommendations{" +
+                        "page = '" + page + '\'' +
+                        ",total_pages = '" + totalPages + '\'' +
+                        ",results = '" + results + '\'' +
+                        ",total_results = '" + totalResults + '\'' +
+                        "}";
+    }
 }

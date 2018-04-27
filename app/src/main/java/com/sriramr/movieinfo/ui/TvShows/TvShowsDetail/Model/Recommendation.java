@@ -1,170 +1,171 @@
 package com.sriramr.movieinfo.ui.TvShows.TvShowsDetail.Model;
 
-import java.util.List;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class Recommendation {
 
-	@SerializedName("first_air_date")
-	private String firstAirDate;
+    @SerializedName("first_air_date")
+    private String firstAirDate;
 
-	@SerializedName("overview")
-	private String overview;
+    @SerializedName("overview")
+    private String overview;
 
-	@SerializedName("original_language")
-	private String originalLanguage;
+    @SerializedName("original_language")
+    private String originalLanguage;
 
-	@SerializedName("genre_ids")
-	private List<Integer> genreIds;
+    @SerializedName("genre_ids")
+    private List<Integer> genreIds;
 
-	@SerializedName("poster_path")
-	private String posterPath;
+    @SerializedName("poster_path")
+    private String posterPath;
 
-	@SerializedName("origin_country")
-	private List<String> originCountry;
+    @SerializedName("origin_country")
+    private List<String> originCountry;
 
-	@SerializedName("backdrop_path")
-	private String backdropPath;
+    @SerializedName("backdrop_path")
+    private String backdropPath;
 
-	@SerializedName("original_name")
-	private String originalName;
+    @SerializedName("original_name")
+    private String originalName;
 
-	@SerializedName("popularity")
-	private double popularity;
+    @SerializedName("popularity")
+    private double popularity;
 
-	@SerializedName("vote_average")
-	private double voteAverage;
+    @SerializedName("vote_average")
+    private double voteAverage;
 
-	@SerializedName("name")
-	private String name;
+    @SerializedName("name")
+    private String name;
 
-	@SerializedName("id")
-	private int id;
+    @SerializedName("id")
+    private int id;
 
-	@SerializedName("vote_count")
-	private int voteCount;
+    @SerializedName("vote_count")
+    private int voteCount;
 
-	public void setFirstAirDate(String firstAirDate){
-		this.firstAirDate = firstAirDate;
-	}
+    public void setFirstAirDate(String firstAirDate) {
+        this.firstAirDate = firstAirDate;
+    }
 
-	public String getFirstAirDate(){
-		return firstAirDate;
-	}
+    public String getFirstAirDate() {
+        return firstAirDate;
+    }
 
-	public void setOverview(String overview){
-		this.overview = overview;
-	}
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
 
-	public String getOverview(){
-		return overview;
-	}
+    public String getOverview() {
+        return overview;
+    }
 
-	public void setOriginalLanguage(String originalLanguage){
-		this.originalLanguage = originalLanguage;
-	}
+    public void setOriginalLanguage(String originalLanguage) {
+        this.originalLanguage = originalLanguage;
+    }
 
-	public String getOriginalLanguage(){
-		return originalLanguage;
-	}
+    public String getOriginalLanguage() {
+        return originalLanguage;
+    }
 
-	public void setGenreIds(List<Integer> genreIds){
-		this.genreIds = genreIds;
-	}
+    public void setGenreIds(List<Integer> genreIds) {
+        this.genreIds = genreIds;
+    }
 
-	public List<Integer> getGenreIds(){
-		return genreIds;
-	}
+    public List<Integer> getGenreIds() {
+        return genreIds;
+    }
 
-	public void setPosterPath(String posterPath){
-		this.posterPath = posterPath;
-	}
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
 
-	public String getPosterPath(){
-		return posterPath;
-	}
+    public String getPosterPath() {
+        return posterPath;
+    }
 
-	public void setOriginCountry(List<String> originCountry){
-		this.originCountry = originCountry;
-	}
+    public void setOriginCountry(List<String> originCountry) {
+        this.originCountry = originCountry;
+    }
 
-	public List<String> getOriginCountry(){
-		return originCountry;
-	}
+    public List<String> getOriginCountry() {
+        return originCountry;
+    }
 
-	public void setBackdropPath(String backdropPath){
-		this.backdropPath = backdropPath;
-	}
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
+    }
 
-	public String getBackdropPath(){
-		return backdropPath;
-	}
+    public String getBackdropPath() {
+        return backdropPath;
+    }
 
-	public void setOriginalName(String originalName){
-		this.originalName = originalName;
-	}
+    public void setOriginalName(String originalName) {
+        this.originalName = originalName;
+    }
 
-	public String getOriginalName(){
-		return originalName;
-	}
+    public String getOriginalName() {
+        return originalName;
+    }
 
-	public void setPopularity(double popularity){
-		this.popularity = popularity;
-	}
+    public void setPopularity(double popularity) {
+        this.popularity = popularity;
+    }
 
-	public double getPopularity(){
-		return popularity;
-	}
+    public double getPopularity() {
+        return popularity;
+    }
 
-	public void setVoteAverage(double voteAverage){
-		this.voteAverage = voteAverage;
-	}
+    public void setVoteAverage(double voteAverage) {
+        this.voteAverage = voteAverage;
+    }
 
-	public double getVoteAverage(){
-		return voteAverage;
-	}
+    public double getVoteAverage() {
+        return voteAverage;
+    }
 
-	public void setName(String name){
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getName(){
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setId(int id){
-		this.id = id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public int getId(){
-		return id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void setVoteCount(int voteCount){
-		this.voteCount = voteCount;
-	}
+    public void setVoteCount(int voteCount) {
+        this.voteCount = voteCount;
+    }
 
-	public int getVoteCount(){
-		return voteCount;
-	}
+    public int getVoteCount() {
+        return voteCount;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"Recommendation{" +
-			"first_air_date = '" + firstAirDate + '\'' + 
-			",overview = '" + overview + '\'' + 
-			",original_language = '" + originalLanguage + '\'' + 
-			",genre_ids = '" + genreIds + '\'' + 
-			",poster_path = '" + posterPath + '\'' + 
-			",origin_country = '" + originCountry + '\'' + 
-			",backdrop_path = '" + backdropPath + '\'' + 
-			",original_name = '" + originalName + '\'' + 
-			",popularity = '" + popularity + '\'' + 
-			",vote_average = '" + voteAverage + '\'' + 
-			",name = '" + name + '\'' + 
-			",id = '" + id + '\'' + 
-			",vote_count = '" + voteCount + '\'' + 
-			"}";
-		}
+    @Override
+    public String toString() {
+        return
+                "Recommendation{" +
+                        "first_air_date = '" + firstAirDate + '\'' +
+                        ",overview = '" + overview + '\'' +
+                        ",original_language = '" + originalLanguage + '\'' +
+                        ",genre_ids = '" + genreIds + '\'' +
+                        ",poster_path = '" + posterPath + '\'' +
+                        ",origin_country = '" + originCountry + '\'' +
+                        ",backdrop_path = '" + backdropPath + '\'' +
+                        ",original_name = '" + originalName + '\'' +
+                        ",popularity = '" + popularity + '\'' +
+                        ",vote_average = '" + voteAverage + '\'' +
+                        ",name = '" + name + '\'' +
+                        ",id = '" + id + '\'' +
+                        ",vote_count = '" + voteCount + '\'' +
+                        "}";
+    }
 }

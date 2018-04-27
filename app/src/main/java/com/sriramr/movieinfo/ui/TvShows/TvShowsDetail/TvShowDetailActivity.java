@@ -15,10 +15,10 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.sriramr.movieinfo.Network.MovieService;
 import com.sriramr.movieinfo.Network.NetworkService;
+import com.sriramr.movieinfo.R;
 import com.sriramr.movieinfo.ui.People.PeopleDetailActivity.PeopleDetailActivity;
 import com.sriramr.movieinfo.ui.People.PopularPeopleActivity.Models.PopularPeople;
 import com.sriramr.movieinfo.ui.People.PopularPeopleActivity.PopularPeopleActivity;
-import com.sriramr.movieinfo.R;
 import com.sriramr.movieinfo.ui.TvShows.TvShowsDetail.Model.Cast;
 import com.sriramr.movieinfo.ui.TvShows.TvShowsDetail.Model.Genres;
 import com.sriramr.movieinfo.ui.TvShows.TvShowsDetail.Model.Recommendation;
@@ -143,7 +143,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements TvShowCas
         detailRvRecommendations.setLayoutManager(recommendationLayoutManager);
         detailRvRecommendations.setHasFixedSize(true);
         detailRvRecommendations.setNestedScrollingEnabled(false);
-        recommendationsAdapter = new TvShowRecommendationsAdapter(this,this);
+        recommendationsAdapter = new TvShowRecommendationsAdapter(this, this);
         detailRvRecommendations.setAdapter(recommendationsAdapter);
 
         // cast rv
@@ -151,7 +151,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements TvShowCas
         detailRvCast.setLayoutManager(castLayoutManager);
         detailRvCast.setHasFixedSize(true);
         detailRvCast.setNestedScrollingEnabled(false);
-        castAdapter = new TvShowCastAdapter(this,this);
+        castAdapter = new TvShowCastAdapter(this, this);
         detailRvCast.setAdapter(castAdapter);
 
         Call<TvShowDetailResponse> call = service.getDetailTvShow(tvShowId, AppConstants.API_KEY, AppConstants.TV_SHOW_APPEND_TO_RESPONSE);
@@ -174,10 +174,9 @@ public class TvShowDetailActivity extends AppCompatActivity implements TvShowCas
             }
         });
 
-
         detailCastSeeAll.setOnClickListener(view -> {
             ArrayList<PopularPeople> popularPeople = new ArrayList<>();
-            for(Cast c : cast){
+            for (Cast c : cast) {
                 PopularPeople p = new PopularPeople();
                 p.setName(c.getName());
                 p.setId(c.getId());
@@ -189,7 +188,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements TvShowCas
 
             Intent i1 = new Intent(TvShowDetailActivity.this, PopularPeopleActivity.class);
             i1.putExtra(AppConstants.CAST_LIST, p);
-            i1.putExtra(AppConstants.TAG,AppConstants.MOVIE_CAST);
+            i1.putExtra(AppConstants.TAG, AppConstants.MOVIE_CAST);
             startActivity(i1);
         });
 
@@ -215,7 +214,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements TvShowCas
 
         //genre
         StringBuilder genreBuilder = new StringBuilder();
-        for (Genres g: show.getGenres()){
+        for (Genres g : show.getGenres()) {
             genreBuilder.append(g.getName());
             genreBuilder.append(", ");
         }
@@ -244,12 +243,12 @@ public class TvShowDetailActivity extends AppCompatActivity implements TvShowCas
         detailSeasonCount.setText(String.valueOf(show.getNumberOfSeasons()));
 
         //images view
-        Picasso.with(this).load(AppConstants.IMAGE_BASE_URL+AppConstants.POSTER_SIZE+show.getPosterPath())
+        Picasso.with(this).load(AppConstants.IMAGE_BASE_URL + AppConstants.POSTER_SIZE + show.getPosterPath())
                 .centerCrop().fit().into(detailImagesView);
 
         // videos view
         // TODO improve this
-        Picasso.with(this).load(AppConstants.IMAGE_BASE_URL+AppConstants.POSTER_SIZE+show.getPosterPath())
+        Picasso.with(this).load(AppConstants.IMAGE_BASE_URL + AppConstants.POSTER_SIZE + show.getPosterPath())
                 .centerCrop().fit().into(detailVideosView);
 
         // seasons adapter
@@ -277,8 +276,8 @@ public class TvShowDetailActivity extends AppCompatActivity implements TvShowCas
     @Override
     public void onRecommendationItemClicked(Recommendation recommendation) {
         Intent i = new Intent(TvShowDetailActivity.this, TvShowDetailActivity.class);
-        i.putExtra(AppConstants.TV_SHOW_ID,String.valueOf(recommendation.getId()));
-        i.putExtra(AppConstants.TV_SHOW_TITLE,recommendation.getName());
+        i.putExtra(AppConstants.TV_SHOW_ID, String.valueOf(recommendation.getId()));
+        i.putExtra(AppConstants.TV_SHOW_TITLE, recommendation.getName());
         startActivity(i);
         finish();
     }

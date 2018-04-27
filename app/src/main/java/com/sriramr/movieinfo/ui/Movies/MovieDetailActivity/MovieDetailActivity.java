@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -371,14 +370,14 @@ public class MovieDetailActivity extends AppCompatActivity implements View.OnCli
 
     @OnClick({R.id.movie_favs, R.id.movie_watched, R.id.movie_watch_later})
     public void onViewClicked(View view) {
-        if (movie == null){
+        if (movie == null) {
             // this means that this particular movie isnt present in the database. Create a new movie
-            movie = new MovieWrapper(movieTitle,movieId,moviePoster,movieGenre,movieVoteAverage);
+            movie = new MovieWrapper(movieTitle, movieId, moviePoster, movieGenre, movieVoteAverage);
             movie.setDefaults();
         }
         switch (view.getId()) {
             case R.id.movie_favs:
-                if (movie.getIsFavourite() == 1){
+                if (movie.getIsFavourite() == 1) {
                     // movie is already in favs.
                     Toast.makeText(this, "Already added in favourites", Toast.LENGTH_SHORT).show();
                     return;
@@ -387,7 +386,7 @@ public class MovieDetailActivity extends AppCompatActivity implements View.OnCli
                 Toast.makeText(this, "Added to favourites", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.movie_watched:
-                if (movie.getIsWatched() == 1){
+                if (movie.getIsWatched() == 1) {
                     // movie is already in watched.
                     Toast.makeText(this, "Already added in watched", Toast.LENGTH_SHORT).show();
                     return;
@@ -396,7 +395,7 @@ public class MovieDetailActivity extends AppCompatActivity implements View.OnCli
                 Toast.makeText(this, "Added to watched", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.movie_watch_later:
-                if (movie.getIsWatchLater() == 1){
+                if (movie.getIsWatchLater() == 1) {
                     // movie is already in watch later.
                     Toast.makeText(this, "Already added in watch later list", Toast.LENGTH_SHORT).show();
                     return;

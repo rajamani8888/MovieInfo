@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
 import com.sriramr.movieinfo.Network.MovieService;
 import com.sriramr.movieinfo.Network.NetworkService;
 import com.sriramr.movieinfo.R;
@@ -27,7 +28,6 @@ import com.sriramr.movieinfo.utils.AppConstants;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -38,10 +38,8 @@ import timber.log.Timber;
 
 import static android.view.View.GONE;
 
-
 // NOTE : No need of handling rotation case becuase I have Implemented OkHttp3 caching mechanisms.
 public class TvShowsListFragment extends Fragment implements View.OnClickListener, TvShowItemClickListener {
-
 
     @BindView(R.id.tv_progressbar_airing_today)
     ProgressBar tvProgressbarAiringToday;
@@ -74,7 +72,7 @@ public class TvShowsListFragment extends Fragment implements View.OnClickListene
 
     Call<TvShowsResponse> onTheAirCall, airingTodayCall, popularCall, topRatedCall;
 
-    List<TvShow> onTheAir,popular,topRated,airingToday;
+    List<TvShow> onTheAir, popular, topRated, airingToday;
 
     Context context;
 
@@ -98,13 +96,12 @@ public class TvShowsListFragment extends Fragment implements View.OnClickListene
 
         service = NetworkService.getService(context);
 
-        airingTodayCall = service.getAiringTodayTvShows(AppConstants.API_KEY,1);
-        onTheAirCall = service.getOnTheAirTvShows(AppConstants.API_KEY,1);
-        popularCall = service.getPopularTv(AppConstants.API_KEY,1);
-        topRatedCall = service.getTopRatedTv(AppConstants.API_KEY,1);
+        airingTodayCall = service.getAiringTodayTvShows(AppConstants.API_KEY, 1);
+        onTheAirCall = service.getOnTheAirTvShows(AppConstants.API_KEY, 1);
+        popularCall = service.getPopularTv(AppConstants.API_KEY, 1);
+        topRatedCall = service.getTopRatedTv(AppConstants.API_KEY, 1);
 
         makeNetworkCalls();
-
 
     }
 
@@ -126,13 +123,13 @@ public class TvShowsListFragment extends Fragment implements View.OnClickListene
         rvTvPopular.setNestedScrollingEnabled(true);
         rvTvToprated.setNestedScrollingEnabled(true);
 
-                /* step3 : initialising the layout manager depending upon how we want. Here we have a horizontally scrolling RV
-            NOTE: WE CANNOT USE THE SAME INSTANCE OF LAYOUT MANAGER FOR ALL THE RV's EVEN TOUGH THEY ARE THE SAME
+        /* step3 : initialising the layout manager depending upon how we want. Here we have a horizontally scrolling RV
+           NOTE: WE CANNOT USE THE SAME INSTANCE OF LAYOUT MANAGER FOR ALL THE RV's EVEN TOUGH THEY ARE THE SAME
         */
-        airing_today_layout_manager = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
-        on_the_air_layout_manager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false);
-        popular_layout_manager = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
-        top_rated_layout_manager = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
+        airing_today_layout_manager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        on_the_air_layout_manager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        popular_layout_manager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        top_rated_layout_manager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
 
 
         //step 4: setting the layout manager to the recycler view
@@ -159,16 +156,15 @@ public class TvShowsListFragment extends Fragment implements View.OnClickListene
         popularRvSnapHelper.attachToRecyclerView(rvTvPopular);
         topRatedRVSnapAdapter.attachToRecyclerView(rvTvToprated);
 
-        airing_today_adapter = new TvAiringTodayItemAdapter(context,this);
-        on_the_air_adapter = new TvItemAdapter(context,this);
-        popular_adapter = new TvItemAdapter(context,this);
-        top_rated_adapter = new TvItemAdapter(context,this);
+        airing_today_adapter = new TvAiringTodayItemAdapter(context, this);
+        on_the_air_adapter = new TvItemAdapter(context, this);
+        popular_adapter = new TvItemAdapter(context, this);
+        top_rated_adapter = new TvItemAdapter(context, this);
 
         rvTvAiringToday.setAdapter(airing_today_adapter);
         rvTvOnTheAir.setAdapter(on_the_air_adapter);
         rvTvPopular.setAdapter(popular_adapter);
         rvTvToprated.setAdapter(top_rated_adapter);
-
 
     }
 
@@ -177,10 +173,10 @@ public class TvShowsListFragment extends Fragment implements View.OnClickListene
         airingTodayCall.enqueue(new Callback<TvShowsResponse>() {
             @Override
             public void onResponse(Call<TvShowsResponse> call, Response<TvShowsResponse> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     airingToday.addAll(response.body().getResults());
                     airing_today_adapter.changeItems(airingToday);
-                }else{
+                } else {
                     Toast.makeText(context, "Error loading Airing Today Tv Shows. If error persists, contact the developer", Toast.LENGTH_LONG).show();
                 }
                 tvProgressbarAiringToday.setVisibility(GONE);
@@ -194,14 +190,13 @@ public class TvShowsListFragment extends Fragment implements View.OnClickListene
             }
         });
 
-
         onTheAirCall.enqueue(new Callback<TvShowsResponse>() {
             @Override
             public void onResponse(Call<TvShowsResponse> call, Response<TvShowsResponse> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     onTheAir.addAll(response.body().getResults());
                     on_the_air_adapter.changeItems(onTheAir);
-                }else{
+                } else {
                     Toast.makeText(context, "Faiure", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -216,10 +211,10 @@ public class TvShowsListFragment extends Fragment implements View.OnClickListene
         popularCall.enqueue(new Callback<TvShowsResponse>() {
             @Override
             public void onResponse(Call<TvShowsResponse> call, Response<TvShowsResponse> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     popular.addAll(response.body().getResults());
                     popular_adapter.changeItems(popular);
-                }else{
+                } else {
                     Toast.makeText(context, "Faiure", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -234,10 +229,10 @@ public class TvShowsListFragment extends Fragment implements View.OnClickListene
         topRatedCall.enqueue(new Callback<TvShowsResponse>() {
             @Override
             public void onResponse(Call<TvShowsResponse> call, Response<TvShowsResponse> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     topRated.addAll(response.body().getResults());
                     top_rated_adapter.changeItems(topRated);
-                }else{
+                } else {
                     Toast.makeText(context, "Faiure", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -248,7 +243,6 @@ public class TvShowsListFragment extends Fragment implements View.OnClickListene
                 Timber.e(t.getMessage());
             }
         });
-
 
     }
 
@@ -261,7 +255,7 @@ public class TvShowsListFragment extends Fragment implements View.OnClickListene
     @Override
     public void onClick(View view) {
         String tag;
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.more_airing_today_tv:
                 tag = AppConstants.TAG_TV_AIRING_TODAY;
                 break;
@@ -278,8 +272,8 @@ public class TvShowsListFragment extends Fragment implements View.OnClickListene
                 tag = AppConstants.TAG_TV_TOP_RATED;
                 break;
         }
-        Intent i = new Intent(getActivity(),TvShowsMoreActivity.class);
-        i.putExtra("TAG",tag);
+        Intent i = new Intent(getActivity(), TvShowsMoreActivity.class);
+        i.putExtra("TAG", tag);
         startActivity(i);
     }
 
@@ -288,8 +282,8 @@ public class TvShowsListFragment extends Fragment implements View.OnClickListene
         int showId = show.getId();
         String title = show.getName();
         Intent i = new Intent(context, TvShowDetailActivity.class);
-        i.putExtra(AppConstants.TV_SHOW_ID,String.valueOf(showId));
-        i.putExtra(AppConstants.TV_SHOW_TITLE,title);
+        i.putExtra(AppConstants.TV_SHOW_ID, String.valueOf(showId));
+        i.putExtra(AppConstants.TV_SHOW_TITLE, title);
         startActivity(i);
     }
 }

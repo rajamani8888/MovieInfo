@@ -7,7 +7,6 @@ import java.util.List;
 
 public class DatabaseRepository {
 
-
     private static AppDatabase database;
 
     public static void init(Application context){
@@ -35,8 +34,6 @@ public class DatabaseRepository {
     public static void insertMovies(MovieWrapper movie){
         database.getMoviesDao().insertMovie(movie);
     }
-
-
 
     public static ShowsWrapper getShowWithId(String id){
         return database.getShowsDao().getShowWithId(id);

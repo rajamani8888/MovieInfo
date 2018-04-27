@@ -7,7 +7,6 @@ import com.sriramr.movieinfo.database.DatabaseRepository;
 
 import timber.log.Timber;
 
-
 public class MovieApplication extends Application {
 
     public static MovieApplication get(Activity activity) {
@@ -15,7 +14,7 @@ public class MovieApplication extends Application {
     }
 
     @Override
-    public void onCreate(){
+    public void onCreate() {
         super.onCreate();
 
         Timber.plant(new Timber.DebugTree());

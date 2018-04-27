@@ -1,74 +1,75 @@
 package com.sriramr.movieinfo.ui.Movies.MovieListActivity.Models;
 
-import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-public class MovieListResponse{
+import java.util.List;
 
-	@SerializedName("dates")
-	private Dates dates;
+public class MovieListResponse {
 
-	@SerializedName("page")
-	private int page;
+    @SerializedName("dates")
+    private Dates dates;
 
-	@SerializedName("total_pages")
-	private int totalPages;
+    @SerializedName("page")
+    private int page;
 
-	@SerializedName("results")
-	private List<Movie> results;
+    @SerializedName("total_pages")
+    private int totalPages;
 
-	@SerializedName("total_results")
-	private int totalResults;
+    @SerializedName("results")
+    private List<Movie> results;
 
-	public void setDates(Dates dates){
-		this.dates = dates;
-	}
+    @SerializedName("total_results")
+    private int totalResults;
 
-	public Dates getDates(){
-		return dates;
-	}
+    public void setDates(Dates dates) {
+        this.dates = dates;
+    }
 
-	public void setPage(int page){
-		this.page = page;
-	}
+    public Dates getDates() {
+        return dates;
+    }
 
-	public int getPage(){
-		return page;
-	}
+    public void setPage(int page) {
+        this.page = page;
+    }
 
-	public void setTotalPages(int totalPages){
-		this.totalPages = totalPages;
-	}
+    public int getPage() {
+        return page;
+    }
 
-	public int getTotalPages(){
-		return totalPages;
-	}
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
+    }
 
-	public void setResults(List<Movie> results){
-		this.results = results;
-	}
+    public int getTotalPages() {
+        return totalPages;
+    }
 
-	public List<Movie> getResults(){
-		return results;
-	}
+    public void setResults(List<Movie> results) {
+        this.results = results;
+    }
 
-	public void setTotalResults(int totalResults){
-		this.totalResults = totalResults;
-	}
+    public List<Movie> getResults() {
+        return results;
+    }
 
-	public int getTotalResults(){
-		return totalResults;
-	}
+    public void setTotalResults(int totalResults) {
+        this.totalResults = totalResults;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"MovieListResponse{" + 
-			"dates = '" + dates + '\'' + 
-			",page = '" + page + '\'' + 
-			",total_pages = '" + totalPages + '\'' + 
-			",results = '" + results + '\'' + 
-			",total_results = '" + totalResults + '\'' + 
-			"}";
-		}
+    public int getTotalResults() {
+        return totalResults;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "MovieListResponse{" +
+                        "dates = '" + dates + '\'' +
+                        ",page = '" + page + '\'' +
+                        ",total_pages = '" + totalPages + '\'' +
+                        ",results = '" + results + '\'' +
+                        ",total_results = '" + totalResults + '\'' +
+                        "}";
+    }
 }

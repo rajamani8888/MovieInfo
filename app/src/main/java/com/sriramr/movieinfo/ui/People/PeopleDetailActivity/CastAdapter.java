@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.sriramr.movieinfo.ui.People.PeopleDetailActivity.Models.CastItem;
 import com.sriramr.movieinfo.R;
+import com.sriramr.movieinfo.ui.People.PeopleDetailActivity.Models.CastItem;
 import com.sriramr.movieinfo.utils.AppConstants;
 
 import java.util.ArrayList;
@@ -19,14 +19,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-
 public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder> {
 
     private Context context;
     private List<CastItem> cast;
     private CastClickListener mClickListener;
 
-    public CastAdapter(Context context, CastClickListener clickListener){
+    public CastAdapter(Context context, CastClickListener clickListener) {
         this.context = context;
         mClickListener = clickListener;
         cast = new ArrayList<>();
@@ -36,7 +35,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
-        View v = LayoutInflater.from(context).inflate(R.layout.item_star_cast,parent,false);
+        View v = LayoutInflater.from(context).inflate(R.layout.item_star_cast, parent, false);
         return new ViewHolder(v);
     }
 
@@ -48,15 +47,15 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return cast.isEmpty() ? 0: cast.size();
+        return cast.isEmpty() ? 0 : cast.size();
     }
 
-    public void setCast(List<CastItem> cast){
+    public void setCast(List<CastItem> cast) {
         this.cast = cast;
         notifyDataSetChanged();
     }
 
-    public interface CastClickListener{
+    public interface CastClickListener {
         void onCastClicked(CastItem cast);
     }
 
@@ -71,12 +70,12 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder> {
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
         }
 
-        public void bind(CastItem cast){
-            Picasso.with(context).load(AppConstants.IMAGE_BASE_URL+AppConstants.POSTER_SIZE+cast.getPosterPath())
+        public void bind(CastItem cast) {
+            Picasso.with(context).load(AppConstants.IMAGE_BASE_URL + AppConstants.POSTER_SIZE + cast.getPosterPath())
                     .fit()
                     .centerCrop()
                     .into(movieImage);

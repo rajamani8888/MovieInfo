@@ -1,38 +1,39 @@
 package com.sriramr.movieinfo.ui.Movies.MovieDetailActivity.Models;
 
-import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-public class Images{
+import java.util.List;
 
-	@SerializedName("backdrops")
-	private List<Object> backdrops;
+public class Images {
 
-	@SerializedName("posters")
-	private List<Object> posters;
+    @SerializedName("backdrops")
+    private List<Object> backdrops;
 
-	public void setBackdrops(List<Object> backdrops){
-		this.backdrops = backdrops;
-	}
+    @SerializedName("posters")
+    private List<Object> posters;
 
-	public List<Object> getBackdrops(){
-		return backdrops;
-	}
+    public void setBackdrops(List<Object> backdrops) {
+        this.backdrops = backdrops;
+    }
 
-	public void setPosters(List<Object> posters){
-		this.posters = posters;
-	}
+    public List<Object> getBackdrops() {
+        return backdrops;
+    }
 
-	public List<Object> getPosters(){
-		return posters;
-	}
+    public void setPosters(List<Object> posters) {
+        this.posters = posters;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"Images{" + 
-			"backdrops = '" + backdrops + '\'' + 
-			",posters = '" + posters + '\'' + 
-			"}";
-		}
+    public List<Object> getPosters() {
+        return posters;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "Images{" +
+                        "backdrops = '" + backdrops + '\'' +
+                        ",posters = '" + posters + '\'' +
+                        "}";
+    }
 }

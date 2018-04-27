@@ -13,11 +13,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
-import com.sriramr.movieinfo.ui.favourites.FavouritesActivity;
+import com.sriramr.movieinfo.R;
 import com.sriramr.movieinfo.ui.Discover.DiscoverActivity.DiscoverActivity;
 import com.sriramr.movieinfo.ui.People.PopularPeopleActivity.PopularPeopleActivity;
 import com.sriramr.movieinfo.ui.TvShows.TvShows.TvShowsListFragment;
-import com.sriramr.movieinfo.R;
+import com.sriramr.movieinfo.ui.favourites.FavouritesActivity;
 import com.sriramr.movieinfo.utils.AppConstants;
 
 import butterknife.BindView;
@@ -47,10 +47,10 @@ public class MovieListActivity extends AppCompatActivity
 
         initViews();
 
-        if (savedInstanceState == null){
+        if (savedInstanceState == null) {
             FragmentManager m = getSupportFragmentManager();
             m.beginTransaction()
-                    .add(R.id.movie_list_activity_frame,new MovieListFragment())
+                    .add(R.id.movie_list_activity_frame, new MovieListFragment())
                     .commit();
         }
 
@@ -58,7 +58,7 @@ public class MovieListActivity extends AppCompatActivity
 
     private void initViews() {
 
-        drawer =  findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -108,23 +108,23 @@ public class MovieListActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         FragmentManager manager = getSupportFragmentManager();
-        switch (id){
+        switch (id) {
             case R.id.nav_movies:
 
                 manager.beginTransaction()
-                        .replace(R.id.movie_list_activity_frame,new MovieListFragment())
+                        .replace(R.id.movie_list_activity_frame, new MovieListFragment())
                         .commit();
                 getSupportActionBar().setTitle("Movie");
                 break;
             case R.id.nav_tv_s:
                 manager.beginTransaction()
-                        .replace(R.id.movie_list_activity_frame,new TvShowsListFragment())
+                        .replace(R.id.movie_list_activity_frame, new TvShowsListFragment())
                         .commit();
                 getSupportActionBar().setTitle("Tv Shows");
                 break;
             case R.id.nav_people:
-                Intent i = new Intent(MovieListActivity.this,PopularPeopleActivity.class);
-                i.putExtra(AppConstants.TAG,AppConstants.POPULAR_PEOPLE);
+                Intent i = new Intent(MovieListActivity.this, PopularPeopleActivity.class);
+                i.putExtra(AppConstants.TAG, AppConstants.POPULAR_PEOPLE);
                 startActivity(i);
                 break;
             case R.id.nav_discover:

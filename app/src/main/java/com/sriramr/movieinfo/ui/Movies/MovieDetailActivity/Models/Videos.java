@@ -1,26 +1,27 @@
 package com.sriramr.movieinfo.ui.Movies.MovieDetailActivity.Models;
 
-import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-public class Videos{
+import java.util.List;
 
-	@SerializedName("results")
-	private List<Video> results;
+public class Videos {
 
-	public void setResults(List<Video> results){
-		this.results = results;
-	}
+    @SerializedName("results")
+    private List<Video> results;
 
-	public List<Video> getResults(){
-		return results;
-	}
+    public void setResults(List<Video> results) {
+        this.results = results;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"Videos{" + 
-			"results = '" + results + '\'' + 
-			"}";
-		}
+    public List<Video> getResults() {
+        return results;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "Videos{" +
+                        "results = '" + results + '\'' +
+                        "}";
+    }
 }

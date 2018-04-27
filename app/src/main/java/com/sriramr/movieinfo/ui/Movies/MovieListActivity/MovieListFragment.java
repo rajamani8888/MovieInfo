@@ -15,13 +15,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.sriramr.movieinfo.Network.MovieService;
 import com.sriramr.movieinfo.Network.NetworkService;
+import com.sriramr.movieinfo.R;
 import com.sriramr.movieinfo.ui.Movies.MovieDetailActivity.MovieDetailActivity;
 import com.sriramr.movieinfo.ui.Movies.MovieListActivity.Models.Movie;
 import com.sriramr.movieinfo.ui.Movies.MovieListActivity.Models.MovieListResponse;
 import com.sriramr.movieinfo.ui.Movies.MovieMoreActivity.MovieMoreActivity;
-import com.sriramr.movieinfo.Network.MovieService;
-import com.sriramr.movieinfo.R;
 import com.sriramr.movieinfo.utils.AppConstants;
 
 import butterknife.BindView;
@@ -54,14 +55,14 @@ public class MovieListFragment extends Fragment implements View.OnClickListener,
     @BindView(R.id.rv_movies_upcoming)
     RecyclerView rvMoviesUpcoming;
 
-    MovieItemAdapter nowplayingMoviesAdapter, popularMoviesAdapter,upcomingMoviesAdapter,topratedMoviesAdapter;
+    MovieItemAdapter nowplayingMoviesAdapter, popularMoviesAdapter, upcomingMoviesAdapter, topratedMoviesAdapter;
 
     MovieService movieService;
 
     Unbinder unbinder;
 
     RecyclerView.LayoutManager nowplaying_layout_manager, popular_layout_manager, upcoming_layout_manager, toprated_layout_manager;
-    SnapHelper nowPlayingRVSnapHelper, popularRVSnapHelper, upcomingMoviesRVSnapHelper , topratedRVSnapAdapter;
+    SnapHelper nowPlayingRVSnapHelper, popularRVSnapHelper, upcomingMoviesRVSnapHelper, topratedRVSnapAdapter;
 
     Context context;
 
@@ -100,7 +101,7 @@ public class MovieListFragment extends Fragment implements View.OnClickListener,
         Call<MovieListResponse> callNowPlaying = movieService.getNowPlayingMovies(page, AppConstants.API_KEY);
         Call<MovieListResponse> callPopular = movieService.getPopularMovies(page, AppConstants.API_KEY);
         Call<MovieListResponse> callTopRated = movieService.getTopRatedMovies(page, AppConstants.API_KEY);
-        Call<MovieListResponse> callUpcoming = movieService.getUpcomingMovies(page,AppConstants.API_KEY);
+        Call<MovieListResponse> callUpcoming = movieService.getUpcomingMovies(page, AppConstants.API_KEY);
 
 
         callNowPlaying.enqueue(new Callback<MovieListResponse>() {
@@ -108,7 +109,7 @@ public class MovieListFragment extends Fragment implements View.OnClickListener,
             public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
                 if (response.isSuccessful()) {
                     nowplayingMoviesAdapter.changeItems(response.body().getResults());
-                }else{
+                } else {
                     Toast.makeText(context, "Error loading data..", Toast.LENGTH_SHORT).show();
                 }
                 progressbar.setVisibility(GONE);
@@ -127,7 +128,7 @@ public class MovieListFragment extends Fragment implements View.OnClickListener,
             public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
                 if (response.isSuccessful()) {
                     popularMoviesAdapter.changeItems(response.body().getResults());
-                }else{
+                } else {
                     Toast.makeText(context, "Error loading data..", Toast.LENGTH_SHORT).show();
                 }
                 progressbar.setVisibility(GONE);
@@ -144,7 +145,7 @@ public class MovieListFragment extends Fragment implements View.OnClickListener,
             public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
                 if (response.isSuccessful()) {
                     topratedMoviesAdapter.changeItems(response.body().getResults());
-                }else{
+                } else {
                     Toast.makeText(context, "Error loading data..", Toast.LENGTH_SHORT).show();
                 }
                 progressbar.setVisibility(GONE);
@@ -161,7 +162,7 @@ public class MovieListFragment extends Fragment implements View.OnClickListener,
             public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
                 if (response.isSuccessful()) {
                     upcomingMoviesAdapter.changeItems(response.body().getResults());
-                }else{
+                } else {
                     Toast.makeText(context, "Error loading data..", Toast.LENGTH_SHORT).show();
                 }
                 progressbar.setVisibility(GONE);
@@ -192,7 +193,7 @@ public class MovieListFragment extends Fragment implements View.OnClickListener,
 //
 //    }
 
-    private void initViews(Context context){
+    private void initViews(Context context) {
         progressbar.setVisibility(View.VISIBLE);
 
         // More button listeners
@@ -212,10 +213,10 @@ public class MovieListFragment extends Fragment implements View.OnClickListener,
         /* step3 : initialising the layout manager depending upon how we want. Here we have a horizontally scrolling RV
             NOTE: WE CANNOT USE THE SAME INSTANCE OF LAYOUT MANAGER FOR ALL THE RV's EVEN TOUGH THEY ARE THE SAME
         */
-        nowplaying_layout_manager = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
-        popular_layout_manager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false);
-        upcoming_layout_manager = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
-        toprated_layout_manager = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
+        nowplaying_layout_manager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        popular_layout_manager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        upcoming_layout_manager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        toprated_layout_manager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
 
 
         //step 4: setting the layout manager to the recycler view
@@ -243,10 +244,10 @@ public class MovieListFragment extends Fragment implements View.OnClickListener,
         topratedRVSnapAdapter.attachToRecyclerView(rvMoviesToprated);
 
         // setup adapters
-        nowplayingMoviesAdapter = new MovieItemAdapter(context,this);
-        popularMoviesAdapter = new MovieItemAdapter(context,this);
-        topratedMoviesAdapter = new MovieItemAdapter(context,this);
-        upcomingMoviesAdapter = new MovieItemAdapter(context,this);
+        nowplayingMoviesAdapter = new MovieItemAdapter(context, this);
+        popularMoviesAdapter = new MovieItemAdapter(context, this);
+        topratedMoviesAdapter = new MovieItemAdapter(context, this);
+        upcomingMoviesAdapter = new MovieItemAdapter(context, this);
 
         rvMoviesNowPlaying.setAdapter(nowplayingMoviesAdapter);
         rvMoviesPopular.setAdapter(popularMoviesAdapter);
@@ -264,35 +265,35 @@ public class MovieListFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onClick(View view) {
         String tag;
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.more_now_playing_movies:
-                tag = AppConstants.TAG_NOW_PLAYING_MOVIES;
+                tag = AppConstants.MOVIES_TAG_NOW_PLAYING;
                 break;
             case R.id.more_popular_movies:
-                tag = AppConstants.TAG_POPULAR_MOVIES;
+                tag = AppConstants.MOVIES_TAG_POPULAR;
                 break;
             case R.id.more_toprated_movies:
-                tag = AppConstants.TAG_TOP_RATED_MOVIES;
+                tag = AppConstants.MOVIES_TAG_TOP_RATED;
                 break;
             case R.id.more_upcoming_movies:
-                tag = AppConstants.TAG_UPCOMING_MOVIES;
+                tag = AppConstants.MOVIES_TAG_UPCOMING;
                 break;
             default:
                 tag = AppConstants.TAG_DEFAULT;
                 break;
         }
-        Intent i = new Intent(getActivity(),MovieMoreActivity.class);
-        i.putExtra("TAG",tag);
+        Intent i = new Intent(getActivity(), MovieMoreActivity.class);
+        i.putExtra("TAG", tag);
         startActivity(i);
     }
 
     @Override
     public void onItemClick(Movie movie) {
         Integer movieId = movie.getId();
-        String title =  movie.getTitle();
-        Intent i = new Intent(getActivity(),MovieDetailActivity.class);
-        i.putExtra(AppConstants.MOVIE_ID,movieId.toString());
-        i.putExtra(AppConstants.MOVIE_TITLE,title);
+        String title = movie.getTitle();
+        Intent i = new Intent(getActivity(), MovieDetailActivity.class);
+        i.putExtra(AppConstants.MOVIE_ID, movieId.toString());
+        i.putExtra(AppConstants.MOVIE_TITLE, title);
         startActivity(i);
 
     }

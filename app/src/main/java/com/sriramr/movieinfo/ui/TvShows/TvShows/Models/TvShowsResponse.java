@@ -1,62 +1,63 @@
 package com.sriramr.movieinfo.ui.TvShows.TvShows.Models;
 
-import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-public class TvShowsResponse{
+import java.util.List;
 
-	@SerializedName("page")
-	private int page;
+public class TvShowsResponse {
 
-	@SerializedName("total_pages")
-	private int totalPages;
+    @SerializedName("page")
+    private int page;
 
-	@SerializedName("results")
-	private List<TvShow> results;
+    @SerializedName("total_pages")
+    private int totalPages;
 
-	@SerializedName("total_results")
-	private int totalResults;
+    @SerializedName("results")
+    private List<TvShow> results;
 
-	public void setPage(int page){
-		this.page = page;
-	}
+    @SerializedName("total_results")
+    private int totalResults;
 
-	public int getPage(){
-		return page;
-	}
+    public void setPage(int page) {
+        this.page = page;
+    }
 
-	public void setTotalPages(int totalPages){
-		this.totalPages = totalPages;
-	}
+    public int getPage() {
+        return page;
+    }
 
-	public int getTotalPages(){
-		return totalPages;
-	}
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
+    }
 
-	public void setResults(List<TvShow> results){
-		this.results = results;
-	}
+    public int getTotalPages() {
+        return totalPages;
+    }
 
-	public List<TvShow> getResults(){
-		return results;
-	}
+    public void setResults(List<TvShow> results) {
+        this.results = results;
+    }
 
-	public void setTotalResults(int totalResults){
-		this.totalResults = totalResults;
-	}
+    public List<TvShow> getResults() {
+        return results;
+    }
 
-	public int getTotalResults(){
-		return totalResults;
-	}
+    public void setTotalResults(int totalResults) {
+        this.totalResults = totalResults;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"TvShowsResponse{" + 
-			"page = '" + page + '\'' + 
-			",total_pages = '" + totalPages + '\'' + 
-			",results = '" + results + '\'' + 
-			",total_results = '" + totalResults + '\'' + 
-			"}";
-		}
+    public int getTotalResults() {
+        return totalResults;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "TvShowsResponse{" +
+                        "page = '" + page + '\'' +
+                        ",total_pages = '" + totalPages + '\'' +
+                        ",results = '" + results + '\'' +
+                        ",total_results = '" + totalResults + '\'' +
+                        "}";
+    }
 }
