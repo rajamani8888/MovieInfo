@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Application;
 
 import com.sriramr.movieinfo.database.DatabaseRepository;
+import com.sriramr.movieinfo.network.NetworkRepository;
+import com.sriramr.movieinfo.network.NetworkService;
 
 import timber.log.Timber;
 
@@ -21,6 +23,9 @@ public class MovieApplication extends Application {
 
         // initialising database repository. Needs to be done only once in the whole application.
         DatabaseRepository.init(this);
+
+        // initialising network repo.
+        NetworkRepository.init(NetworkService.getService(this));
 
     }
 

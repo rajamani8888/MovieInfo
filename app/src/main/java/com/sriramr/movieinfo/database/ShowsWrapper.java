@@ -14,9 +14,9 @@ public class ShowsWrapper {
     private String poster;
     private String genre;
     private String voteAverage;
-    private boolean isFavourite;
-    private boolean isWatched;
-    private boolean isWatchLater;
+    private int isFavourite;
+    private int isWatched;
+    private int isWatchLater;
 
     public ShowsWrapper(@NonNull String id, String title, String poster, String genre, String voteAverage) {
         this.title = title;
@@ -26,14 +26,6 @@ public class ShowsWrapper {
         this.voteAverage = voteAverage;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     @NonNull
     public String getId() {
         return id;
@@ -41,6 +33,14 @@ public class ShowsWrapper {
 
     public void setId(@NonNull String id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getPoster() {
@@ -67,27 +67,33 @@ public class ShowsWrapper {
         this.voteAverage = voteAverage;
     }
 
-    public boolean isFavourite() {
+    public int getIsFavourite() {
         return isFavourite;
     }
 
-    public void setFavourite(boolean favourite) {
-        isFavourite = favourite;
+    public void setIsFavourite(int isFavourite) {
+        this.isFavourite = isFavourite;
     }
 
-    public boolean isWatched() {
+    public int getIsWatched() {
         return isWatched;
     }
 
-    public void setWatched(boolean watched) {
-        isWatched = watched;
+    public void setIsWatched(int isWatched) {
+        this.isWatched = isWatched;
     }
 
-    public boolean isWatchLater() {
+    public int getIsWatchLater() {
         return isWatchLater;
     }
 
-    public void setWatchLater(boolean watchLater) {
-        isWatchLater = watchLater;
+    public void setIsWatchLater(int isWatchLater) {
+        this.isWatchLater = isWatchLater;
+    }
+
+    public void setDefaults() {
+        isFavourite = 0;
+        isWatched = 0;
+        isWatchLater = 0;
     }
 }

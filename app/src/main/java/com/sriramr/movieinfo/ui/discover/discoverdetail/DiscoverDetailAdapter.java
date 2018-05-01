@@ -34,7 +34,7 @@ public class DiscoverDetailAdapter extends RecyclerView.Adapter<DiscoverDetailAd
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
-        View v = LayoutInflater.from(context).inflate(R.layout.item_discover_detail,parent,false);
+        View v = LayoutInflater.from(context).inflate(R.layout.item_movie_long,parent,false);
         return new ViewHolder(v);
     }
 
@@ -60,14 +60,14 @@ public class DiscoverDetailAdapter extends RecyclerView.Adapter<DiscoverDetailAd
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @BindView(R.id.discover_detail_image)
-        ImageView posterImage;
-        @BindView(R.id.discover_detail_title)
+        @BindView(R.id.movie_list_thumbnail)
+        ImageView image;
+        @BindView(R.id.movie_list_title)
         TextView title;
-        @BindView(R.id.discover_detail_release_date)
-        TextView releaseDate;
-        @BindView(R.id.discover_detail_ratings)
+        @BindView(R.id.movie_list_ratings)
         TextView ratings;
+        @BindView(R.id.movie_list_overflow)
+        ImageView overflow;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -79,15 +79,11 @@ public class DiscoverDetailAdapter extends RecyclerView.Adapter<DiscoverDetailAd
         public void bind(DiscoverMovieItem movieItem){
             Picasso.with(context).load(AppConstants.IMAGE_BASE_URL+AppConstants.POSTER_SIZE+movieItem.getPosterPath())
                     .fit().centerCrop()
-                    .into(posterImage);
+                    .into(image);
 
             title.setText(movieItem.getTitle());
 
-            releaseDate.setText(movieItem.getReleaseDate());
-
             ratings.setText(String.valueOf(movieItem.getVoteAverage()));
-
-
 
         }
 
