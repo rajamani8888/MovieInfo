@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.MainActivity.MainActivity">
+        <activity android:name=".ui.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,47 +20,47 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.Movies.MovieListActivity.MovieListActivity"
+            android:name=".ui.movies.movielist.MovieListActivity"
             android:label="@string/title_activity_movie_list"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.Movies.MovieMoreActivity.MovieMoreActivity"
+            android:name=".ui.movies.moviemore.MovieMoreActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".ui.Movies.MovieListActivity.MovieListActivity">
+            android:parentActivityName=".ui.movies.movielist.MovieListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.Movies.MovieListActivity.MovieListActivity" />
+                android:value=".ui.movies.movielist.MovieListActivity" />
         </activity>
         <activity
-            android:name=".ui.Movies.MovieDetailActivity.MovieDetailActivity"
+            android:name=".ui.movies.moviedetail.MovieDetailActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".ui.Movies.MovieListActivity.MovieListActivity"
+            android:parentActivityName=".ui.movies.movielist.MovieListActivity"
             android:theme="@style/DetailStyle" />
         <activity
-            android:name=".ui.TvShows.TvShowsMore.TvShowsMoreActivity"
+            android:name=".ui.tvshows.showsmore.TvShowsMoreActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".ui.Movies.MovieListActivity.MovieListActivity" />
+            android:parentActivityName=".ui.movies.movielist.MovieListActivity" />
         <activity
-            android:name=".ui.TvShows.TvShowsDetail.TvShowDetailActivity"
+            android:name=".ui.tvshows.showsdetail.TvShowDetailActivity"
             android:label="@string/title_activity_tv_show_detail"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".ui.People.PopularPeopleActivity.PopularPeopleActivity"
+            android:name=".ui.people.peoplepopular.PopularPeopleActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".ui.Movies.MovieListActivity.MovieListActivity" />
+            android:parentActivityName=".ui.movies.movielist.MovieListActivity" />
         <activity
-            android:name=".ui.People.PeopleDetailActivity.PeopleDetailActivity"
+            android:name=".ui.people.peopledetail.PeopleDetailActivity"
             android:launchMode="singleTop" />
         <activity
-            android:name=".ui.Discover.DiscoverActivity.DiscoverActivity"
+            android:name=".ui.discover.discover.DiscoverActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.Discover.DiscoverDetailActivity.DiscoverDetailActivity"
+            android:name=".ui.discover.discoverdetail.DiscoverDetailActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".ui.Discover.DiscoverActivity.DiscoverActivity" />
+            android:parentActivityName=".ui.discover.discover.DiscoverActivity" />
         <activity
             android:name=".ui.favourites.FavouritesActivity"
             android:label="@string/title_activity_favourites"
