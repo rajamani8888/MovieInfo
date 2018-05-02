@@ -8,21 +8,21 @@ import java.util.List;
 public class NetworkItems<T> {
 
     private Status status;
-    private List<T> listItems;
+    private List<T> items;
 
     public NetworkItems() {
         this.status = Status.FAILURE;
-        this.listItems = new ArrayList<>();
+        items = new ArrayList<>();
     }
 
     public NetworkItems(Status status, List<T> listItems) {
         this.status = status;
-        this.listItems = listItems;
+        this.items = listItems;
     }
 
     public NetworkItems(Status status) {
         this.status = status;
-        this.listItems = new ArrayList<>();
+        items = new ArrayList<>();
     }
 
     public Status getStatus() {
@@ -33,11 +33,11 @@ public class NetworkItems<T> {
         this.status = status;
     }
 
-    public List<T> getListItems() {
-        return listItems;
+    public List<T> getItems() {
+        return items;
     }
 
-    public void setListItems(List<T> listItems) {
-        this.listItems = listItems;
+    public void setItems(List<T> items) {
+        this.items = items;
     }
 }

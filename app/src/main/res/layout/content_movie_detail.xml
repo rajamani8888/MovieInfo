@@ -2,10 +2,11 @@
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/detai_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.Movies.MovieDetailActivity.MovieDetailActivity"
+    tools:context=".ui.movies.moviedetail.MovieDetailActivity"
     tools:showIn="@layout/activity_movie_detail">
 
     <include layout="@layout/layout_movie_detail" />

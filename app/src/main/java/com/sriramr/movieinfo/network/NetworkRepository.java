@@ -2,6 +2,7 @@ package com.sriramr.movieinfo.network;
 
 import com.sriramr.movieinfo.ui.discover.discoverdetail.models.DiscoverMoviesResponse;
 import com.sriramr.movieinfo.ui.discover.discoverdetail.models.DiscoverShowResponse;
+import com.sriramr.movieinfo.ui.movies.moviedetail.models.MovieDetailResponse;
 import com.sriramr.movieinfo.ui.movies.movielist.models.MovieListResponse;
 import com.sriramr.movieinfo.utils.AppConstants;
 
@@ -40,6 +41,10 @@ public class NetworkRepository {
 
     public static Observable<MovieListResponse> getUpcomingMovies(int page) {
         return mService.getUpcomingMovies(page, AppConstants.API_KEY);
+    }
+
+    public static Observable<MovieDetailResponse> getMovieDetails(String movieId) {
+        return mService.getMovieDetails(movieId, AppConstants.API_KEY, AppConstants.MOVIE_APPEND_TO_RESPONSE);
     }
 
 }

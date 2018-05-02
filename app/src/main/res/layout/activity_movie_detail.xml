@@ -2,10 +2,11 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".ui.Movies.MovieDetailActivity.MovieDetailActivity">
+    tools:context=".ui.movies.moviedetail.MovieDetailActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -24,10 +25,10 @@
             app:toolbarId="@+id/toolbar">
 
             <ImageView
-                android:fitsSystemWindows="true"
                 android:id="@+id/movie_detail_scroll_image"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -37,44 +38,44 @@
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
             <FrameLayout
-                android:fitsSystemWindows="true"
-                android:visibility="gone"
-                android:background="@color/primaryDarkColor"
                 android:id="@+id/frame"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@color/primaryDarkColor"
+                android:fitsSystemWindows="true"
+                android:visibility="gone">
 
                 <LinearLayout
-                    android:visibility="gone"
                     android:id="@+id/layout"
-                    android:gravity="center"
-                    android:layout_gravity="center"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:visibility="gone">
 
                     <Button
-                        style="?attr/buttonBarButtonStyle"
                         android:id="@+id/movie_favs"
-                        android:text="@string/favourites"
-                        android:layout_weight="1"
+                        style="?attr/buttonBarButtonStyle"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/favourites" />
 
                     <Button
-                        style="?attr/buttonBarButtonStyle"
                         android:id="@+id/movie_watched"
-                        android:text="@string/watched"
-                        android:layout_weight="1"
+                        style="?attr/buttonBarButtonStyle"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/watched" />
 
                     <Button
-                        style="?attr/buttonBarButtonStyle"
                         android:id="@+id/movie_watch_later"
-                        android:text="@string/watch_later"
-                        android:layout_weight="1"
+                        style="?attr/buttonBarButtonStyle"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/watch_later" />
 
                 </LinearLayout>
             </FrameLayout>
@@ -87,12 +88,11 @@
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_movies"
         android:layout_width="wrap_content"
-        android:layout_margin="8dp"
         android:layout_height="wrap_content"
-        app:layout_anchor="@id/app_bar"
+        android:layout_margin="8dp"
         android:src="@drawable/ic_add_black_24dp"
-        app:layout_anchorGravity="bottom|end"
-        />
+        app:layout_anchor="@id/app_bar"
+        app:layout_anchorGravity="bottom|end" />
 
     <include layout="@layout/content_movie_detail" />
 

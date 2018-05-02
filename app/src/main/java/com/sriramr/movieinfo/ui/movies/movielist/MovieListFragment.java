@@ -83,7 +83,7 @@ public class MovieListFragment extends Fragment implements View.OnClickListener,
                 return;
             }
             progressbar.setVisibility(View.GONE);
-            nowplayingMoviesAdapter.changeItems(nowPlayingMovies.getListItems());
+            nowplayingMoviesAdapter.changeItems(nowPlayingMovies.getItems());
 
         });
 
@@ -97,7 +97,7 @@ public class MovieListFragment extends Fragment implements View.OnClickListener,
                 return;
             }
 
-            popularMoviesAdapter.changeItems(popularMovies.getListItems());
+            popularMoviesAdapter.changeItems(popularMovies.getItems());
 
         });
 
@@ -111,7 +111,7 @@ public class MovieListFragment extends Fragment implements View.OnClickListener,
                 return;
             }
 
-            topratedMoviesAdapter.changeItems(topRatedMovies.getListItems());
+            topratedMoviesAdapter.changeItems(topRatedMovies.getItems());
 
         });
 
@@ -125,7 +125,7 @@ public class MovieListFragment extends Fragment implements View.OnClickListener,
                 return;
             }
 
-            upcomingMoviesAdapter.changeItems(upcomingMovies.getListItems());
+            upcomingMoviesAdapter.changeItems(upcomingMovies.getItems());
 
         });
 

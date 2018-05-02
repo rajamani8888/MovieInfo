@@ -106,7 +106,7 @@ public class DiscoverDetailActivity extends AppCompatActivity implements Discove
                 return;
             }
             progress.setVisibility(View.GONE);
-            List<DiscoverMovieItem> movies = discoverMovies.getListItems();
+            List<DiscoverMovieItem> movies = discoverMovies.getItems();
             discoverAdapter.setMovies(movies);
         });
     }
@@ -122,7 +122,7 @@ public class DiscoverDetailActivity extends AppCompatActivity implements Discove
                 return;
             }
             progress.setVisibility(View.GONE);
-            List<DiscoverMovieItem> shows = discoverShows.getListItems();
+            List<DiscoverMovieItem> shows = discoverShows.getItems();
             discoverAdapter.setMovies(shows);
         });
     }
@@ -131,13 +131,13 @@ public class DiscoverDetailActivity extends AppCompatActivity implements Discove
     public void onDiscoverItemClicked(int position) {
         if (Objects.equals(mViewModel.getGenreType(), AppConstants.DISCOVER_MOVIE)) {
             Intent i = new Intent(DiscoverDetailActivity.this, MovieDetailActivity.class);
-            List<DiscoverMovieItem> movies = mViewModel.getDiscoverMovies().getValue().getListItems();
+            List<DiscoverMovieItem> movies = mViewModel.getDiscoverMovies().getValue().getItems();
             i.putExtra(AppConstants.MOVIE_ID, String.valueOf(movies.get(position).getId()));
             i.putExtra(AppConstants.MOVIE_TITLE, movies.get(position).getTitle());
             startActivity(i);
         } else {
             Intent i = new Intent(DiscoverDetailActivity.this, TvShowDetailActivity.class);
-            List<DiscoverMovieItem> shows = mViewModel.getDiscoverShows().getValue().getListItems();
+            List<DiscoverMovieItem> shows = mViewModel.getDiscoverShows().getValue().getItems();
             i.putExtra(AppConstants.TV_SHOW_ID, String.valueOf(shows.get(position).getId()));
             i.putExtra(AppConstants.TV_SHOW_TITLE, shows.get(position).getTitle());
             startActivity(i);

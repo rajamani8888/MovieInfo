@@ -73,7 +73,7 @@ public class DiscoverDetailViewModel extends AndroidViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(discoverMoviesResponse -> {
                     moviesItem.setStatus(Status.SUCCESS);
-                    moviesItem.getListItems().addAll(discoverMoviesResponse.getResults());
+                    moviesItem.getItems().addAll(discoverMoviesResponse.getResults());
                     discoverMovies.setValue(moviesItem);
                 }, throwable -> {
                     moviesItem.setStatus(Status.FAILURE);
@@ -100,7 +100,7 @@ public class DiscoverDetailViewModel extends AndroidViewModel {
                         showsItems.add(show);
                     }
                     showsItem.setStatus(Status.SUCCESS);
-                    showsItem.getListItems().addAll(showsItems);
+                    showsItem.getItems().addAll(showsItems);
                     discoverShows.setValue(showsItem);
                 }, throwable -> {
                     showsItem.setStatus(Status.FAILURE);

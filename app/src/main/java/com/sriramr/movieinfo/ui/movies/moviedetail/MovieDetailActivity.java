@@ -1,6 +1,7 @@
 package com.sriramr.movieinfo.ui.movies.moviedetail;
 
 import android.animation.Animator;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -13,18 +14,14 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-import com.sriramr.movieinfo.network.MovieService;
-import com.sriramr.movieinfo.network.NetworkService;
 import com.sriramr.movieinfo.R;
 import com.sriramr.movieinfo.database.DatabaseRepository;
 import com.sriramr.movieinfo.database.MovieWrapper;
@@ -36,20 +33,15 @@ import com.sriramr.movieinfo.ui.people.peopledetail.PeopleDetailActivity;
 import com.sriramr.movieinfo.ui.people.peoplepopular.PopularPeopleActivity;
 import com.sriramr.movieinfo.ui.people.peoplepopular.models.PopularPeople;
 import com.sriramr.movieinfo.utils.AppConstants;
+import com.sriramr.movieinfo.utils.Status;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class MovieDetailActivity extends AppCompatActivity implements View.OnClickListener, MovieDetailCastAdapter.CastItemClickListener, MovieDetailRecommendationsAdapter.RecommendationClickListener {
@@ -82,49 +74,30 @@ public class MovieDetailActivity extends AppCompatActivity implements View.OnCli
     TextView detailBudget;
     @BindView(R.id.detail_revenue)
     TextView detailRevenue;
-    @BindView(R.id.detail_images)
-    RelativeLayout detailImages;
-    @BindView(R.id.detail_videos)
-    RelativeLayout detailVideos;
     @BindView(R.id.detail_cast_see_all)
     TextView detailCastSeeAll;
     @BindView(R.id.detail_rv_cast)
     RecyclerView detailRvCast;
-    @BindView(R.id.detail_recommendations_see_all)
-    TextView detailRecommendationsSeeAll;
     @BindView(R.id.detail_rv_recommendations)
     RecyclerView detailRvRecommendations;
-
     @BindView(R.id.detail_images_view)
     ImageView detailImagesView;
     @BindView(R.id.detail_videos_view)
     ImageView detailVideosView;
-
     @BindView(R.id.movie_detail_pb)
     ProgressBar movieDetailPb;
-
     @BindView(R.id.layout)
     LinearLayout layout;
     @BindView(R.id.frame)
     FrameLayout frame;
-    @BindView(R.id.movie_favs)
-    Button movieFavs;
-    @BindView(R.id.movie_watched)
-    Button movieWatched;
-    @BindView(R.id.movie_watch_later)
-    Button movieWatchLater;
 
     private boolean isAnimShowed = false;
     private Animation alphaAnim;
-    private MovieWrapper movie;
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    String movieId = "", movieTitle = "", moviePoster = "", movieGenre = "", movieVoteAverage = "";
-    MovieService movieService;
     MovieDetailCastAdapter castAdapter;
     MovieDetailRecommendationsAdapter recommendationsAdapter;
-    List<Cast> casts = new ArrayList<>();
-    List<Recommendation> recommendations = new ArrayList<>();
+
+    private MovieDetailViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,47 +111,45 @@ public class MovieDetailActivity extends AppCompatActivity implements View.OnCli
 
         // get extras from the previous activity
         Intent intent = getIntent();
-        if (intent != null) {
-            Bundle bundle = intent.getExtras();
-            if (bundle != null) {
-                movieId = bundle.getString(AppConstants.MOVIE_ID);
-                movieTitle = bundle.getString(AppConstants.MOVIE_TITLE);
-            }
-        }
-
-        if (Objects.equals(movieId, "")) {
-            Toast.makeText(this, "Error.. Please try again. If the error persists, contact the developer", Toast.LENGTH_SHORT).show();
-            finish();
-            // finish wont stop the code below from executing. Once finish() is called, the onCreate() is executed and then closed.
+        if (intent == null || intent.getExtras() == null) {
+            Toast.makeText(this, "Error with intent", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        mViewModel = ViewModelProviders.of(this).get(MovieDetailViewModel.class);
+
+        Bundle bundle = intent.getExtras();
+        String movieId = bundle.getString(AppConstants.MOVIE_ID);
+        String movieTitle = bundle.getString(AppConstants.MOVIE_TITLE);
+
+        mViewModel.init(movieId, movieTitle);
 
         alphaAnim = AnimationUtils.loadAnimation(this, R.anim.alpha_anim);
 
         setupViews();
+        observeDataFromApi();
 
-        movieService = NetworkService.getService(this);
         movieDetailPb.setVisibility(View.VISIBLE);
 
         //clicks
         detailCastSeeAll.setOnClickListener(this);
     }
 
-    public void getDataFromApi() {
-        Observable<MovieDetailResponse> movieDetailObservable = movieService.getMovieDetails(movieId, AppConstants.API_KEY, AppConstants.MOVIE_APPEND_TO_RESPONSE);
+    public void observeDataFromApi() {
+        mViewModel.getMovieDetailResponse().observe(this, movie -> {
+            if (movie == null) {
+                Toast.makeText(this, "Error getting movie from API", Toast.LENGTH_SHORT).show();
+                Timber.e("Movie from observable is null");
+                return;
+            }
 
-        compositeDisposable.add(
-                movieDetailObservable.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(movie -> {
-                            completeUI(movie);
-                            movieDetailPb.setVisibility(View.GONE);
-                        }, throwable -> {
-                            Toast.makeText(MovieDetailActivity.this, "Error loading..", Toast.LENGTH_SHORT).show();
-                            movieDetailPb.setVisibility(View.GONE);
-                        })
-        );
+            if (movie.getStatus() == Status.FAILURE) {
+                Toast.makeText(this, "Error getting data from API", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
+            completeUI(movie.getItem());
+        });
     }
 
     private void setupViews() {
@@ -199,13 +170,13 @@ public class MovieDetailActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void completeUI(MovieDetailResponse movie) {
+        movieDetailPb.setVisibility(View.GONE);
         // load image in the collapsing toolbar
         Picasso.with(this).load(AppConstants.IMAGE_BASE_URL + AppConstants.BACKDROP_SIZE + movie.getBackdropPath())
                 .fit().into(detailScroll);
 
         // poster icon
-        moviePoster = AppConstants.IMAGE_BASE_URL + AppConstants.POSTER_SIZE + movie.getPosterPath();
-        Picasso.with(this).load(moviePoster)
+        Picasso.with(this).load(AppConstants.IMAGE_BASE_URL + AppConstants.POSTER_SIZE + movie.getPosterPath())
                 .fit().centerCrop().into(detailPosterIcon);
 
         // title
@@ -219,10 +190,7 @@ public class MovieDetailActivity extends AppCompatActivity implements View.OnCli
             genreBuffer.append(g.getName());
             genreBuffer.append(",");
         }
-        movieGenre = genreBuffer.toString();
-        detailGenre.setText(movieGenre);
-
-        movieVoteAverage = String.valueOf(movie.getVoteAverage());
+        detailGenre.setText(genreBuffer.toString());
 
         //no of votes
         detailVotes.setText(String.valueOf(movie.getVoteCount()));
@@ -255,30 +223,19 @@ public class MovieDetailActivity extends AppCompatActivity implements View.OnCli
                 .centerCrop().fit().into(detailVideosView);
 
         // cast recycler view
-        casts = movie.getCredits().getCast();
-        castAdapter.setCast(casts);
+        castAdapter.setCast(movie.getCredits().getCast());
 
         //recommendations rv
-        recommendations = movie.getRecommendations().getResults();
-        recommendationsAdapter.setRecommendations(recommendations);
+        recommendationsAdapter.setRecommendations(movie.getRecommendations().getResults());
 
     }
 
     @Override
     public void onClick(View v) {
         // we need to convert CAST to POPULAR PEOPLE. We only need name, profile path and ID.
-        ArrayList<PopularPeople> popularPeople = new ArrayList<>();
+        ArrayList<PopularPeople> popularPeople = mViewModel.getCasts();
         Bundle b = new Bundle();
-        for (Cast c : casts) {
-            PopularPeople p = new PopularPeople();
-            p.setName(c.getName());
-            p.setId(c.getId());
-            p.setProfilePath(c.getProfilePath());
-            popularPeople.add(p);
-            Timber.e("Added %s", c.getName());
-        }
         Parcelable people = Parcels.wrap(popularPeople);
-        Timber.e("Length before  sendin list %d", popularPeople.size());
         Intent i = new Intent(MovieDetailActivity.this, PopularPeopleActivity.class);
         b.putParcelable(AppConstants.CAST_LIST, people);
         i.putExtra(AppConstants.TAG, AppConstants.MOVIE_CAST);
@@ -297,11 +254,11 @@ public class MovieDetailActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onRecommendationsItemClick(Recommendation recommendation) {
-        Intent i = new Intent(MovieDetailActivity.this, MovieDetailActivity.class);
+        Intent i = new Intent(this, MovieDetailActivity.class);
         i.putExtra(AppConstants.MOVIE_ID, String.valueOf(recommendation.getId()));
         i.putExtra(AppConstants.MOVIE_TITLE, recommendation.getTitle());
-        startActivity(i);
         finish();
+        startActivity(i);
     }
 
     @Override
@@ -357,11 +314,7 @@ public class MovieDetailActivity extends AppCompatActivity implements View.OnCli
 
     @OnClick({R.id.movie_favs, R.id.movie_watched, R.id.movie_watch_later})
     public void onViewClicked(View view) {
-        if (movie == null) {
-            // this means that this particular movie isnt present in the database. Create a new movie
-            movie = new MovieWrapper(movieTitle, movieId, moviePoster, movieGenre, movieVoteAverage);
-            movie.setDefaults();
-        }
+        MovieWrapper movie = mViewModel.getMovieFromDb();
         switch (view.getId()) {
             case R.id.movie_favs:
                 if (movie.getIsFavourite() == 1) {
@@ -394,18 +347,9 @@ public class MovieDetailActivity extends AppCompatActivity implements View.OnCli
 
         // inserting the movie changes into the database
         DatabaseRepository.insertMovies(movie);
+        // need to update the ViewModel for the next iteration
+        // TODO convert to live data implementation observed
+        mViewModel.setMovie(movie);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        getDataFromApi();
-        movie = DatabaseRepository.getMovieWithId(movieId);
-    }
-
-    @Override
-    protected void onPause() {
-        compositeDisposable.dispose();
-        super.onPause();
-    }
 }

@@ -24,6 +24,9 @@ public class MovieWrapper {
         this.poster = poster;
         this.genre = genre;
         this.voteAverage = voteAverage;
+        this.isFavourite = 0;
+        this.isWatched = 0;
+        this.isWatchLater = 0;
     }
 
     public String getTitle() {
@@ -89,12 +92,6 @@ public class MovieWrapper {
 
     public void setIsWatchLater(int isWatchLater) {
         this.isWatchLater = isWatchLater;
-    }
-
-    public void setDefaults(){
-        this.isFavourite = 0;
-        this.isWatched = 0;
-        this.isWatchLater = 0;
     }
 
 }
