@@ -45,11 +45,11 @@ public class MovieListResponse {
         return totalPages;
     }
 
-    public void setResults(List<Movie> results) {
+    public void setMovies(List<Movie> results) {
         this.results = results;
     }
 
-    public List<Movie> getResults() {
+    public List<Movie> getMovies() {
         return results;
     }
 

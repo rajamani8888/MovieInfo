@@ -134,7 +134,7 @@ public class MovieMoreActivity extends AppCompatActivity implements MovieListAda
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(movieListResponse -> {
                             progressBar.setVisibility(View.GONE);
-                            movies.addAll(movieListResponse.getResults());
+                            movies.addAll(movieListResponse.getMovies());
                             movieListAdapter.setData(movies);
                         }, throwable -> {
                             Timber.e(throwable);

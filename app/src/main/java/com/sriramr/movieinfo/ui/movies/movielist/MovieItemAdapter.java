@@ -1,6 +1,7 @@
 package com.sriramr.movieinfo.ui.movies.movielist;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +25,6 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.View
 
     private List<Movie> movies;
 
-    private Integer movieId;
-
     private Context context;
 
     private ItemClickListener mClickListener;
@@ -34,21 +33,19 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.View
         this.movies = new ArrayList<>();
         this.context = context;
         mClickListener = clickListener;
-        movieId = 0;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View vh = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_movie_small, parent, false);
         return new ViewHolder(vh);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Movie movie = movies.get(position);
-
-        movieId = movie.getId();
 
         String title = movie.getTitle();
         String imagepath = movie.getPosterPath();
@@ -61,7 +58,7 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.View
 
     @Override
     public int getItemCount() {
-        return movies.isEmpty() ? 0 : 5;
+        return movies.size();
     }
 
     public void changeItems(List<Movie> movies) {

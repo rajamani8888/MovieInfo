@@ -20,6 +20,11 @@ public class NetworkItems<T> {
         this.listItems = listItems;
     }
 
+    public NetworkItems(Status status) {
+        this.status = status;
+        this.listItems = new ArrayList<>();
+    }
+
     public Status getStatus() {
         return status;
     }

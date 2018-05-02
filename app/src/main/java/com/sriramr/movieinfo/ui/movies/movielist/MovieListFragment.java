@@ -1,5 +1,6 @@
 package com.sriramr.movieinfo.ui.movies.movielist;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,29 +17,20 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.sriramr.movieinfo.network.MovieService;
-import com.sriramr.movieinfo.network.NetworkService;
 import com.sriramr.movieinfo.R;
 import com.sriramr.movieinfo.ui.movies.moviedetail.MovieDetailActivity;
 import com.sriramr.movieinfo.ui.movies.movielist.models.Movie;
-import com.sriramr.movieinfo.ui.movies.movielist.models.MovieListResponse;
 import com.sriramr.movieinfo.ui.movies.moviemore.MovieMoreActivity;
 import com.sriramr.movieinfo.utils.AppConstants;
+import com.sriramr.movieinfo.utils.Status;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
-
-import static android.view.View.GONE;
+import timber.log.Timber;
 
 public class MovieListFragment extends Fragment implements View.OnClickListener, MovieItemAdapter.ItemClickListener {
 
-    @BindView(R.id.progressbar_nowplaying)
-    ProgressBar progressbar;
     @BindView(R.id.more_now_playing_movies)
     Button moreNowPlayingMovies;
     @BindView(R.id.rv_movies_now_playing)
@@ -55,30 +47,23 @@ public class MovieListFragment extends Fragment implements View.OnClickListener,
     Button moreUpcomingMovies;
     @BindView(R.id.rv_movies_upcoming)
     RecyclerView rvMoviesUpcoming;
-
-    MovieItemAdapter nowplayingMoviesAdapter, popularMoviesAdapter, upcomingMoviesAdapter, topratedMoviesAdapter;
-
-    MovieService movieService;
+    @BindView(R.id.progressbar)
+    ProgressBar progressbar;
 
     Unbinder unbinder;
 
     RecyclerView.LayoutManager nowplaying_layout_manager, popular_layout_manager, upcoming_layout_manager, toprated_layout_manager;
     SnapHelper nowPlayingRVSnapHelper, popularRVSnapHelper, upcomingMoviesRVSnapHelper, topratedRVSnapAdapter;
+    MovieItemAdapter nowplayingMoviesAdapter, popularMoviesAdapter, upcomingMoviesAdapter, topratedMoviesAdapter;
 
-    Context context;
-
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
+    private MovieListViewModel mViewModel;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_movie_list, container, false);
         unbinder = ButterKnife.bind(this, v);
+        mViewModel = ViewModelProviders.of(this).get(MovieListViewModel.class);
         return v;
     }
 
@@ -86,81 +71,70 @@ public class MovieListFragment extends Fragment implements View.OnClickListener,
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        context = getActivity();
+        initViews(getActivity());
 
-        initViews(context);
+        mViewModel.getNowPlayingMovies().observe(this, nowPlayingMovies -> {
+            if (nowPlayingMovies == null) {
+                Timber.e("Movies is null");
+                return;
+            }
+            if (nowPlayingMovies.getStatus() == Status.FAILURE) {
+                Toast.makeText(getActivity(), "Error retrieving data from API", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            progressbar.setVisibility(View.GONE);
+            nowplayingMoviesAdapter.changeItems(nowPlayingMovies.getListItems());
 
-        movieService = NetworkService.getService(context);
+        });
 
-    }
+        mViewModel.getPopularMovies().observe(this, popularMovies -> {
+            if (popularMovies == null) {
+                Timber.e("Movies is null");
+                return;
+            }
+            if (popularMovies.getStatus() == Status.FAILURE) {
+                Toast.makeText(getActivity(), "Error retrieving data from API", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-    private void getDataFromApi(int page) {
+            popularMoviesAdapter.changeItems(popularMovies.getListItems());
 
-        Observable<MovieListResponse> nowPlayingObservable = movieService.getNowPlayingMovies(page, AppConstants.API_KEY);
-        Observable<MovieListResponse> popularObservable = movieService.getPopularMovies(page, AppConstants.API_KEY);
-        Observable<MovieListResponse> topRatedObservable = movieService.getTopRatedMovies(page, AppConstants.API_KEY);
-        Observable<MovieListResponse> upcomingObservable = movieService.getUpcomingMovies(page, AppConstants.API_KEY);
+        });
 
-        compositeDisposable.add(
-                nowPlayingObservable.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(nowPlayingResults -> {
-                            nowplayingMoviesAdapter.changeItems(nowPlayingResults.getResults());
-                            progressbar.setVisibility(GONE);
-                        }, throwable -> {
-                            Toast.makeText(context, "Error loading data..", Toast.LENGTH_SHORT).show();
-                            progressbar.setVisibility(GONE);
-                        })
-        );
+        mViewModel.getTopRatedMovies().observe(this, topRatedMovies -> {
+            if (topRatedMovies == null) {
+                Timber.e("Movies is null");
+                return;
+            }
+            if (topRatedMovies.getStatus() == Status.FAILURE) {
+                Toast.makeText(getActivity(), "Error retrieving data from API", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-        compositeDisposable.add(
-                popularObservable.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(popularResults -> {
-                            popularMoviesAdapter.changeItems(popularResults.getResults());
-                            progressbar.setVisibility(GONE);
-                        }, throwable -> {
-                            Toast.makeText(context, "Error loading data..", Toast.LENGTH_SHORT).show();
-                            progressbar.setVisibility(GONE);
-                        })
-        );
+            topratedMoviesAdapter.changeItems(topRatedMovies.getListItems());
 
-        compositeDisposable.add(
-                topRatedObservable.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(topRatedResults -> {
-                            topratedMoviesAdapter.changeItems(topRatedResults.getResults());
-                            progressbar.setVisibility(GONE);
-                        }, throwable -> {
-                            Toast.makeText(context, "Error loading data..", Toast.LENGTH_SHORT).show();
-                            progressbar.setVisibility(GONE);
-                        })
-        );
+        });
 
-        compositeDisposable.add(
-                upcomingObservable.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(upcomingResults -> {
-                            upcomingMoviesAdapter.changeItems(upcomingResults.getResults());
-                            progressbar.setVisibility(GONE);
-                        }, throwable -> {
-                            Toast.makeText(context, "Error loading data..", Toast.LENGTH_SHORT).show();
-                            progressbar.setVisibility(GONE);
-                        })
-        );
+        mViewModel.getUpcomingMovies().observe(this, upcomingMovies -> {
+            if (upcomingMovies == null) {
+                Timber.e("Movies is null");
+                return;
+            }
+            if (upcomingMovies.getStatus() == Status.FAILURE) {
+                Toast.makeText(getActivity(), "Error retrieving data from API", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            upcomingMoviesAdapter.changeItems(upcomingMovies.getListItems());
+
+        });
 
     }
+
 
     @Override
     public void onResume() {
-        getDataFromApi(1);
         super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        compositeDisposable.dispose();
-        super.onPause();
     }
 
     private void initViews(Context context) {
@@ -227,12 +201,6 @@ public class MovieListFragment extends Fragment implements View.OnClickListener,
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
-
-    @Override
     public void onClick(View view) {
         String tag;
         switch (view.getId()) {
@@ -266,5 +234,11 @@ public class MovieListFragment extends Fragment implements View.OnClickListener,
         i.putExtra(AppConstants.MOVIE_TITLE, title);
         startActivity(i);
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }
