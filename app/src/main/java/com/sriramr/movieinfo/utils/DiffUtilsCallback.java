@@ -2,8 +2,6 @@ package com.sriramr.movieinfo.utils;
 
 import android.support.v7.util.DiffUtil;
 
-import com.sriramr.movieinfo.ui.movies.movielist.models.Movie;
-
 import java.util.List;
 
 public class DiffUtilsCallback<T> extends DiffUtil.Callback {
@@ -31,12 +29,7 @@ public class DiffUtilsCallback<T> extends DiffUtil.Callback {
         T newObject = newList.get(newItemPosition);
         T oldObject = oldList.get(oldItemPosition);
 
-        if (newObject instanceof Movie && oldObject instanceof Movie) {
-            Movie newMovie = (Movie) newObject;
-            Movie oldMovie = (Movie) oldObject;
-            return newMovie.getId() == oldMovie.getId();
-        }
-        return false;
+        return newObject.equals(oldObject);
     }
 
     @Override
@@ -44,11 +37,6 @@ public class DiffUtilsCallback<T> extends DiffUtil.Callback {
         T newObject = newList.get(newItemPosition);
         T oldObject = oldList.get(oldItemPosition);
 
-        if (newObject instanceof Movie && oldObject instanceof Movie) {
-            Movie newMovie = (Movie) newObject;
-            Movie oldMovie = (Movie) oldObject;
-            return newMovie.getId() == oldMovie.getId();
-        }
-        return false;
+        return newObject.equals(oldObject);
     }
 }
