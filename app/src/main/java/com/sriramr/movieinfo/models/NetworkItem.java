@@ -7,6 +7,10 @@ public class NetworkItem<T> {
     private Status status;
     private T item;
 
+    public NetworkItem() {
+        this.status = Status.FAILURE;
+    }
+
     public NetworkItem(Status status) {
         this.status = status;
     }

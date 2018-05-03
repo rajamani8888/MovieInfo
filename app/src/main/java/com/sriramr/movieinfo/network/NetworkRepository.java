@@ -4,6 +4,7 @@ import com.sriramr.movieinfo.ui.discover.discoverdetail.models.DiscoverMoviesRes
 import com.sriramr.movieinfo.ui.discover.discoverdetail.models.DiscoverShowResponse;
 import com.sriramr.movieinfo.ui.movies.moviedetail.models.MovieDetailResponse;
 import com.sriramr.movieinfo.ui.movies.movielist.models.MovieListResponse;
+import com.sriramr.movieinfo.ui.tvshows.showsdetail.models.TvShowDetailResponse;
 import com.sriramr.movieinfo.ui.tvshows.showslist.models.TvShowsResponse;
 import com.sriramr.movieinfo.utils.AppConstants;
 
@@ -62,6 +63,10 @@ public class NetworkRepository {
 
     public static Observable<TvShowsResponse> getTopRatedShows(int page) {
         return mService.getTopRatedTv(AppConstants.API_KEY, page);
+    }
+
+    public static Observable<TvShowDetailResponse> getShowDetails(String showId) {
+        return mService.getDetailTvShow(showId, AppConstants.API_KEY, AppConstants.TV_SHOW_APPEND_TO_RESPONSE);
     }
 
 }

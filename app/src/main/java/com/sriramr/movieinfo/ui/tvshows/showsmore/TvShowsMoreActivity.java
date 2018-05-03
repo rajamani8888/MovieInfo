@@ -1,5 +1,6 @@
 package com.sriramr.movieinfo.ui.tvshows.showsmore;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -15,29 +16,22 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.sriramr.movieinfo.network.MovieService;
-import com.sriramr.movieinfo.network.NetworkService;
 import com.sriramr.movieinfo.R;
 import com.sriramr.movieinfo.ui.tvshows.showsdetail.TvShowDetailActivity;
 import com.sriramr.movieinfo.ui.tvshows.showslist.models.TvShow;
-import com.sriramr.movieinfo.ui.tvshows.showslist.models.TvShowsResponse;
 import com.sriramr.movieinfo.utils.AppConstants;
 import com.sriramr.movieinfo.utils.EndlessRecyclerViewScrollListener;
+import com.sriramr.movieinfo.utils.Status;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class TvShowsMoreActivity extends AppCompatActivity implements TvShowsMoreAdapter.TvShowItemClickListener {
 
-    String movieTag = "";
     @BindView(R.id.toolbar_activity_more)
     Toolbar toolbarActivityMore;
     @BindView(R.id.pb_more_tv_show)
@@ -45,11 +39,8 @@ public class TvShowsMoreActivity extends AppCompatActivity implements TvShowsMor
     @BindView(R.id.rv_tv_show_more)
     RecyclerView rvTvShowMore;
 
-    List<TvShow> showList;
-    int page = 1;
     TvShowsMoreAdapter showsMoreAdapter;
-    MovieService service;
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private TvShowsViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,24 +48,24 @@ public class TvShowsMoreActivity extends AppCompatActivity implements TvShowsMor
         setContentView(R.layout.activity_tv_shows_more);
         ButterKnife.bind(this);
 
-        toolbarActivityMore.setTitle("Movie");
+        toolbarActivityMore.setTitle("TvShows");
         setSupportActionBar(toolbarActivityMore);
 
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        showList = new ArrayList<>();
-
         Intent i = getIntent();
-        if (i != null) {
-            movieTag = i.getStringExtra("TAG");
-        } else {
+        if (i == null) {
             Toast.makeText(this, "Please Close the app and try again", Toast.LENGTH_SHORT).show();
             finish();
+            return;
         }
 
-        service = NetworkService.getService(this);
+        mViewModel = ViewModelProviders.of(this).get(TvShowsViewModel.class);
+
+        String movieTag = i.getStringExtra("TAG");
+        mViewModel.init(movieTag);
 
         pbMoreTvShow.setVisibility(View.VISIBLE);
 
@@ -85,55 +76,30 @@ public class TvShowsMoreActivity extends AppCompatActivity implements TvShowsMor
         showsMoreAdapter = new TvShowsMoreAdapter(this, this);
         rvTvShowMore.setAdapter(showsMoreAdapter);
 
-        getDataFromApi(page);
-
         EndlessRecyclerViewScrollListener listener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 page++;
                 Timber.v("Scroll Listener %s", page);
-                getDataFromApi(page);
+                mViewModel.refreshData();
             }
         };
 
         rvTvShowMore.addOnScrollListener(listener);
 
+        observeDataFromApi();
+
     }
 
-    private void getDataFromApi(int page) {
-        Observable<TvShowsResponse> call;
-        switch (this.movieTag) {
-            case AppConstants.TAG_TV_ON_THE_AIR:
-                call = service.getOnTheAirTvShows(AppConstants.API_KEY, page);
-                break;
-            case AppConstants.TAG_TV_AIRING_TODAY:
-                call = service.getAiringTodayTvShows(AppConstants.API_KEY, page);
-                break;
-            case AppConstants.TAG_TV_POPULAR:
-                call = service.getPopularTv(AppConstants.API_KEY, page);
-                break;
-            case AppConstants.TAG_TV_TOP_RATED:
-                call = service.getTopRatedTv(AppConstants.API_KEY, page);
-                break;
-            default:
-                call = service.getTopRatedTv(AppConstants.API_KEY, page);
-                break;
-        }
-
-        compositeDisposable.add(
-                call.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(tvShowsResponse -> {
-                            showList.addAll(tvShowsResponse.getResults());
-                            showsMoreAdapter.setData(showList);
-                            pbMoreTvShow.setVisibility(View.GONE);
-                        }, throwable -> {
-                            Timber.e(throwable);
-                            Toast.makeText(TvShowsMoreActivity.this, "Error. Try again", Toast.LENGTH_SHORT).show();
-                            finish();
-                        })
-        );
-
+    private void observeDataFromApi() {
+        mViewModel.getTvShows().observe(this, tvShowItem -> {
+            if (tvShowItem == null || tvShowItem.getStatus() == Status.FAILURE) {
+                Toast.makeText(this, "Error retrieving data from API", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            pbMoreTvShow.setVisibility(View.GONE);
+            showsMoreAdapter.setData(tvShowItem.getItems());
+        });
     }
 
     @Override
@@ -156,6 +122,7 @@ public class TvShowsMoreActivity extends AppCompatActivity implements TvShowsMor
     }
 
     public boolean popupClick(MenuItem item, int position) {
+        List<TvShow> showList = Objects.requireNonNull(mViewModel.getTvShows().getValue()).getItems();
         switch (item.getItemId()) {
             case R.id.movie_watched:
                 Toast.makeText(this, "Added " + showList.get(position).getName() + " to watched", Toast.LENGTH_SHORT).show();

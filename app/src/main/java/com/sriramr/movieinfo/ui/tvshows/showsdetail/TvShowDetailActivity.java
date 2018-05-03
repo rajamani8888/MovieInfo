@@ -1,20 +1,20 @@
 package com.sriramr.movieinfo.ui.tvshows.showsdetail;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-import com.sriramr.movieinfo.network.MovieService;
-import com.sriramr.movieinfo.network.NetworkService;
 import com.sriramr.movieinfo.R;
 import com.sriramr.movieinfo.ui.people.peopledetail.PeopleDetailActivity;
 import com.sriramr.movieinfo.ui.people.peoplepopular.PopularPeopleActivity;
@@ -22,25 +22,19 @@ import com.sriramr.movieinfo.ui.people.peoplepopular.models.PopularPeople;
 import com.sriramr.movieinfo.ui.tvshows.showsdetail.models.Cast;
 import com.sriramr.movieinfo.ui.tvshows.showsdetail.models.Genres;
 import com.sriramr.movieinfo.ui.tvshows.showsdetail.models.Recommendation;
-import com.sriramr.movieinfo.ui.tvshows.showsdetail.models.Seasons;
 import com.sriramr.movieinfo.ui.tvshows.showsdetail.models.TvShowDetailResponse;
 import com.sriramr.movieinfo.utils.AppConstants;
+import com.sriramr.movieinfo.utils.Status;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
-import timber.log.Timber;
 
-public class  TvShowDetailActivity extends AppCompatActivity implements TvShowCastAdapter.CastClickListener, TvShowRecommendationsAdapter.RecommendationClickListener {
+public class TvShowDetailActivity extends AppCompatActivity implements TvShowCastAdapter.CastClickListener, TvShowRecommendationsAdapter.RecommendationClickListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -58,28 +52,20 @@ public class  TvShowDetailActivity extends AppCompatActivity implements TvShowCa
     TextView detailPlot;
     @BindView(R.id.detail_release_date)
     TextView detailReleaseDate;
-    @BindView(R.id.detail_director)
-    TextView detailDirector;
     @BindView(R.id.detail_runtime)
     TextView detailRuntime;
     @BindView(R.id.detail_meta_score)
     TextView detailMetaScore;
     @BindView(R.id.detail_images_view)
     ImageView detailImagesView;
-    @BindView(R.id.detail_images)
-    RelativeLayout detailImages;
     @BindView(R.id.detail_videos_view)
     ImageView detailVideosView;
-    @BindView(R.id.detail_videos)
-    RelativeLayout detailVideos;
     @BindView(R.id.detail_rv_seasons)
     RecyclerView detailRvSeasons;
     @BindView(R.id.detail_cast_see_all)
     TextView detailCastSeeAll;
     @BindView(R.id.detail_rv_cast)
     RecyclerView detailRvCast;
-    @BindView(R.id.detail_recommendations_see_all)
-    TextView detailRecommendationsSeeAll;
     @BindView(R.id.detail_rv_recommendations)
     RecyclerView detailRvRecommendations;
     @BindView(R.id.tv_show_detail_scroll_image)
@@ -89,19 +75,17 @@ public class  TvShowDetailActivity extends AppCompatActivity implements TvShowCa
     @BindView(R.id.detail_episodes_count)
     TextView detailEpisodesCount;
 
-    String tvShowId = "";
-    String showTitle = "";
-
-    MovieService service;
-
     TvShowSeasonsAdapter seasonsAdapter;
     TvShowCastAdapter castAdapter;
     TvShowRecommendationsAdapter recommendationsAdapter;
+    @BindView(R.id.layout_seasons)
+    CardView layoutSeasons;
+    @BindView(R.id.layout_casts)
+    CardView layoutCasts;
+    @BindView(R.id.layout_recommendations)
+    CardView layoutRecommendations;
 
-    List<Recommendation> recommendations = new ArrayList<>();
-    List<Cast> cast = new ArrayList<>();
-    List<Seasons> seasons = new ArrayList<>();
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private TvShowsViewModel mViewModel;
 
     // TODO add similar tv shows later on
     @Override
@@ -111,26 +95,23 @@ public class  TvShowDetailActivity extends AppCompatActivity implements TvShowCa
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent i = getIntent();
-        if (i != null) {
-            Bundle bundle = i.getExtras();
-            if (bundle != null) {
-                tvShowId = bundle.getString(AppConstants.TV_SHOW_ID);
-                showTitle = bundle.getString(AppConstants.TV_SHOW_TITLE);
-            }
-        }
 
-        if (Objects.equals(tvShowId, "")) {
+        if (i == null || i.getExtras() == null) {
             Toast.makeText(this, "Error.. Please try agin. If the error persists, contact the developer", Toast.LENGTH_SHORT).show();
             finish();
             // finish wont stop the code below from executing. Once finish() is called, the onCreate() is executed and then closed.
             return;
         }
 
-        service = NetworkService.getService(this);
+        mViewModel = ViewModelProviders.of(this).get(TvShowsViewModel.class);
+
+        String tvShowId = i.getExtras().getString(AppConstants.TV_SHOW_ID);
+        String showTitle = i.getExtras().getString(AppConstants.TV_SHOW_TITLE);
+        mViewModel.init(tvShowId, showTitle);
 
         //seasons rv
         RecyclerView.LayoutManager seasonsLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -158,7 +139,7 @@ public class  TvShowDetailActivity extends AppCompatActivity implements TvShowCa
 
         detailCastSeeAll.setOnClickListener(view -> {
             ArrayList<PopularPeople> popularPeople = new ArrayList<>();
-            for (Cast c : cast) {
+            for (Cast c : mViewModel.getCasts()) {
                 PopularPeople p = new PopularPeople();
                 p.setName(c.getName());
                 p.setId(c.getId());
@@ -174,20 +155,19 @@ public class  TvShowDetailActivity extends AppCompatActivity implements TvShowCa
             startActivity(tvShowIntent);
         });
 
+        observeDataFromApi();
+
     }
 
-    public void getDataFromApi() {
-        Observable<TvShowDetailResponse> call = service.getDetailTvShow(tvShowId, AppConstants.API_KEY, AppConstants.TV_SHOW_APPEND_TO_RESPONSE);
+    private void observeDataFromApi() {
+        mViewModel.getTvShowDetails().observe(this, showItem -> {
+            if (showItem == null || showItem.getStatus() == Status.FAILURE) {
+                Toast.makeText(this, "Error getting data from API", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-        compositeDisposable.add(
-                call.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(this::completeUI, throwable -> {
-                            Toast.makeText(this, "Error loading data", Toast.LENGTH_SHORT).show();
-                            Timber.e(throwable);
-                        })
-        );
-
+            completeUI(showItem.getItem());
+        });
     }
 
     private void completeUI(TvShowDetailResponse show) {
@@ -248,29 +228,16 @@ public class  TvShowDetailActivity extends AppCompatActivity implements TvShowCa
                 .centerCrop().fit().into(detailVideosView);
 
         // seasons adapter
-        seasons.addAll(show.getSeasons());
-        seasonsAdapter.setSeasons(seasons);
+        if (mViewModel.getSeasons() != null) seasonsAdapter.setSeasons(mViewModel.getSeasons());
+        else layoutSeasons.setVisibility(View.GONE);
 
         // cast adapter
-        cast.addAll(show.getCredits().getCast());
-        castAdapter.setCast(cast);
+        if (mViewModel.getCasts() != null) castAdapter.setCast(mViewModel.getCasts());
+        else layoutCasts.setVisibility(View.GONE);
 
         // recommendations adapter
-        recommendations.addAll(show.getRecommendations().getResults());
-        recommendationsAdapter.setRecommendations(recommendations);
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        getDataFromApi();
-    }
-
-    @Override
-    protected void onPause() {
-        compositeDisposable.dispose();
-        super.onPause();
+        if (mViewModel.getRecommendations() != null) recommendationsAdapter.setRecommendations(mViewModel.getRecommendations().getResults());
+        else layoutRecommendations.setVisibility(View.GONE);
     }
 
     @Override
