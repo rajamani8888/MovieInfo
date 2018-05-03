@@ -1,10 +1,12 @@
 package com.sriramr.movieinfo.ui.movies.movielist.models;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Movie {
+public class Movie implements Comparable {
 
     @SerializedName("overview")
     private String overview;
@@ -179,5 +181,20 @@ public class Movie {
                         ",adult = '" + adult + '\'' +
                         ",vote_count = '" + voteCount + '\'' +
                         "}";
+    }
+
+    @Override
+    public int compareTo(@NonNull Object object) {
+        Movie movie = (Movie) object;
+        if (this.getId() == movie.getId()) {
+            return 0;
+        }
+        return 1;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Movie movie = (Movie) obj;
+        return this.getId() == movie.getId();
     }
 }

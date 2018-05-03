@@ -1,10 +1,13 @@
 package com.sriramr.movieinfo.ui.movies.moviemore;
 
 import android.content.Context;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,6 +15,7 @@ import com.squareup.picasso.Picasso;
 import com.sriramr.movieinfo.R;
 import com.sriramr.movieinfo.ui.movies.movielist.models.Movie;
 import com.sriramr.movieinfo.utils.AppConstants;
+import com.sriramr.movieinfo.utils.DiffUtilsCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +28,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     private List<Movie> movies;
     private Context context;
     private MoreMoviesClickListener mClickListener;
+    private int lastPosition = -1;
 
     public MovieListAdapter(Context context, MoreMoviesClickListener clickListener) {
         movies = new ArrayList<>();
@@ -54,8 +59,17 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(holder.image);
 
-
+        setAnimation(holder.itemView, position);
         holder.overflow.setOnClickListener(v -> showPopupMenu(holder.overflow, holder.getAdapterPosition()));
+    }
+
+    private void setAnimation(View viewToAnimate, int position) {
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > lastPosition) {
+            Animation animation = AnimationUtils.loadAnimation(context, R.anim.anim_slide_bottom);
+            viewToAnimate.startAnimation(animation);
+            lastPosition = position;
+        }
     }
 
     private void showPopupMenu(View view, int position) {
@@ -63,8 +77,12 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     }
 
     void setData(List<Movie> movies) {
-        this.movies = movies;
-        notifyDataSetChanged();
+        final DiffUtilsCallback<Movie> diffUtilsCallback = new DiffUtilsCallback<>(movies, this.movies);
+        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilsCallback);
+
+        this.movies.clear();
+        this.movies.addAll(movies);
+        diffResult.dispatchUpdatesTo(this);
     }
 
     public interface MoreMoviesClickListener {
