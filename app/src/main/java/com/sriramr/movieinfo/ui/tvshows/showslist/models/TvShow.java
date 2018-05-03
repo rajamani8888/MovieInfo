@@ -168,4 +168,11 @@ public class TvShow {
                         ",vote_count = '" + voteCount + '\'' +
                         "}";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof TvShow)) return false;
+        TvShow show = (TvShow) obj;
+        return this.id == show.id;
+    }
 }

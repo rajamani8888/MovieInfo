@@ -4,6 +4,7 @@ import com.sriramr.movieinfo.ui.discover.discoverdetail.models.DiscoverMoviesRes
 import com.sriramr.movieinfo.ui.discover.discoverdetail.models.DiscoverShowResponse;
 import com.sriramr.movieinfo.ui.movies.moviedetail.models.MovieDetailResponse;
 import com.sriramr.movieinfo.ui.movies.movielist.models.MovieListResponse;
+import com.sriramr.movieinfo.ui.tvshows.showslist.models.TvShowsResponse;
 import com.sriramr.movieinfo.utils.AppConstants;
 
 import io.reactivex.Observable;
@@ -45,6 +46,22 @@ public class NetworkRepository {
 
     public static Observable<MovieDetailResponse> getMovieDetails(String movieId) {
         return mService.getMovieDetails(movieId, AppConstants.API_KEY, AppConstants.MOVIE_APPEND_TO_RESPONSE);
+    }
+
+    public static Observable<TvShowsResponse> getAiringTodayShows(int page) {
+        return mService.getAiringTodayTvShows(AppConstants.API_KEY, page);
+    }
+
+    public static Observable<TvShowsResponse> getOnAirTvShows(int page) {
+        return mService.getOnTheAirTvShows(AppConstants.API_KEY, page);
+    }
+
+    public static Observable<TvShowsResponse> getPopularShows(int page) {
+        return mService.getPopularTv(AppConstants.API_KEY, page);
+    }
+
+    public static Observable<TvShowsResponse> getTopRatedShows(int page) {
+        return mService.getTopRatedTv(AppConstants.API_KEY, page);
     }
 
 }

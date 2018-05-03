@@ -6,6 +6,8 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,6 +21,7 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.ViewHo
     private SparseArray<String> genreList;
     private Context context;
     private DiscoverMovieClickListener mListener;
+    private int lastPosition = -1;
 
     public DiscoverAdapter(Context context, DiscoverMovieClickListener listener) {
         this.context = context;
@@ -38,6 +41,7 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.ViewHo
         int genreId = genreList.keyAt(position);
         String title = genreList.get(genreId);
         holder.bind(title);
+        setAnimation(holder.itemView, position);
     }
 
     @Override
@@ -52,6 +56,15 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.ViewHo
 
     public interface DiscoverMovieClickListener {
         void onClickItem(int position);
+    }
+
+    private void setAnimation(View viewToAnimate, int position) {
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > lastPosition) {
+            Animation animation = AnimationUtils.loadAnimation(context, R.anim.anim_slide_bottom);
+            viewToAnimate.startAnimation(animation);
+            lastPosition = position;
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

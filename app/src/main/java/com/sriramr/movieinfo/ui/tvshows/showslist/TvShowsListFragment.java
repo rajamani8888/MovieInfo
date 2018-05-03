@@ -1,5 +1,6 @@
 package com.sriramr.movieinfo.ui.tvshows.showslist;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,30 +17,17 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.sriramr.movieinfo.network.MovieService;
-import com.sriramr.movieinfo.network.NetworkService;
 import com.sriramr.movieinfo.R;
 import com.sriramr.movieinfo.ui.tvshows.showsdetail.TvShowDetailActivity;
 import com.sriramr.movieinfo.ui.tvshows.showslist.models.TvShow;
-import com.sriramr.movieinfo.ui.tvshows.showslist.models.TvShowsResponse;
 import com.sriramr.movieinfo.ui.tvshows.showsmore.TvShowsMoreActivity;
 import com.sriramr.movieinfo.utils.AppConstants;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.sriramr.movieinfo.utils.Status;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
-import timber.log.Timber;
 
-import static android.view.View.GONE;
-
-// NOTE : No need of handling rotation case becuase I have Implemented OkHttp3 caching mechanisms.
 public class TvShowsListFragment extends Fragment implements View.OnClickListener, TvShowItemClickListener {
 
     @BindView(R.id.tv_progressbar_airing_today)
@@ -66,22 +54,18 @@ public class TvShowsListFragment extends Fragment implements View.OnClickListene
     TvItemAdapter on_the_air_adapter;
     TvItemAdapter popular_adapter;
     TvItemAdapter top_rated_adapter;
-    TvAiringTodayItemAdapter airing_today_adapter;
-    MovieService service;
-    Observable<TvShowsResponse> onTheAirObservable, airingTodayObservable, popularObservable, topRatedObservable;
-    List<TvShow> onTheAir, popular, topRated, airingToday;
+    TvItemAdapter airing_today_adapter;
+
     Context context;
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+    private TvShowsViewModel mViewModel;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_tv_shows_list, container, false);
         unbinder = ButterKnife.bind(this, v);
-        onTheAir = new ArrayList<>();
-        popular = new ArrayList<>();
-        topRated = new ArrayList<>();
-        airingToday = new ArrayList<>();
+        mViewModel = ViewModelProviders.of(this).get(TvShowsViewModel.class);
         return v;
     }
 
@@ -91,12 +75,42 @@ public class TvShowsListFragment extends Fragment implements View.OnClickListene
 
         initViews();
 
-        service = NetworkService.getService(context);
+        observeDataFromApi();
+    }
 
-        airingTodayObservable = service.getAiringTodayTvShows(AppConstants.API_KEY, 1);
-        onTheAirObservable = service.getOnTheAirTvShows(AppConstants.API_KEY, 1);
-        popularObservable = service.getPopularTv(AppConstants.API_KEY, 1);
-        topRatedObservable = service.getTopRatedTv(AppConstants.API_KEY, 1);
+    private void observeDataFromApi() {
+
+        mViewModel.getAiringTodayShows().observe(this, showItems -> {
+            if (showItems == null || showItems.getStatus() == Status.FAILURE) {
+                Toast.makeText(context, "Error getting data from API", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            airing_today_adapter.changeItems(showItems.getItems());
+        });
+
+        mViewModel.getOnTheAirShows().observe(this, showItems -> {
+            if (showItems == null || showItems.getStatus() == Status.FAILURE) {
+                Toast.makeText(context, "Error getting data from API", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            on_the_air_adapter.changeItems(showItems.getItems());
+        });
+
+        mViewModel.getPopularShows().observe(this, showItems -> {
+            if (showItems == null || showItems.getStatus() == Status.FAILURE) {
+                Toast.makeText(context, "Error getting data from API", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            popular_adapter.changeItems(showItems.getItems());
+        });
+
+        mViewModel.getTopRatedShows().observe(this, showItems -> {
+            if (showItems == null || showItems.getStatus() == Status.FAILURE) {
+                Toast.makeText(context, "Error getting data from API", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            top_rated_adapter.changeItems(showItems.getItems());
+        });
 
     }
 
@@ -151,7 +165,7 @@ public class TvShowsListFragment extends Fragment implements View.OnClickListene
         popularRvSnapHelper.attachToRecyclerView(rvTvPopular);
         topRatedRVSnapAdapter.attachToRecyclerView(rvTvToprated);
 
-        airing_today_adapter = new TvAiringTodayItemAdapter(context, this);
+        airing_today_adapter = new TvItemAdapter(context, this);
         on_the_air_adapter = new TvItemAdapter(context, this);
         popular_adapter = new TvItemAdapter(context, this);
         top_rated_adapter = new TvItemAdapter(context, this);
@@ -161,72 +175,6 @@ public class TvShowsListFragment extends Fragment implements View.OnClickListene
         rvTvPopular.setAdapter(popular_adapter);
         rvTvToprated.setAdapter(top_rated_adapter);
 
-    }
-
-    private void makeNetworkCalls() {
-
-        compositeDisposable.add(
-                airingTodayObservable.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(tvShowsResponse -> {
-                            airingToday.addAll(tvShowsResponse.getResults());
-                            airing_today_adapter.changeItems(airingToday);
-                            tvProgressbarAiringToday.setVisibility(GONE);
-                        }, throwable -> {
-                            tvProgressbarAiringToday.setVisibility(GONE);
-                            Timber.e(throwable);
-                            Toast.makeText(context, "Error loading Airing Today Shows", Toast.LENGTH_SHORT).show();
-                        })
-        );
-
-        compositeDisposable.add(
-                onTheAirObservable.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(tvShowsResponse -> {
-                            onTheAir.addAll(tvShowsResponse.getResults());
-                            on_the_air_adapter.changeItems(onTheAir);
-                        }, throwable -> {
-                            Toast.makeText(context, "Faiure", Toast.LENGTH_SHORT).show();
-                            Timber.e(throwable);
-                        })
-        );
-
-        compositeDisposable.add(
-                popularObservable.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(tvShowsResponse -> {
-                            popular.addAll(tvShowsResponse.getResults());
-                            popular_adapter.changeItems(popular);
-                        }, throwable -> {
-                            Toast.makeText(context, "Failure", Toast.LENGTH_SHORT).show();
-                            Timber.e(throwable);
-                        })
-        );
-
-        compositeDisposable.add(
-                topRatedObservable.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(tvShowsResponse -> {
-                            topRated.addAll(tvShowsResponse.getResults());
-                            top_rated_adapter.changeItems(topRated);
-                        }, throwable -> {
-                            Timber.e(throwable);
-                            Toast.makeText(context, "Faiure", Toast.LENGTH_SHORT).show();
-                        })
-        );
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        makeNetworkCalls();
-    }
-
-    @Override
-    public void onPause() {
-        compositeDisposable.dispose();
-        super.onPause();
     }
 
     @Override

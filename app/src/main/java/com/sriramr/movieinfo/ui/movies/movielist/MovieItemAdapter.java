@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,10 +26,9 @@ import timber.log.Timber;
 public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.ViewHolder> {
 
     private List<Movie> movies;
-
     private Context context;
-
     private ItemClickListener mClickListener;
+    private int lastPosition = -1;
 
     public MovieItemAdapter(Context context, ItemClickListener clickListener) {
         this.movies = new ArrayList<>();
@@ -54,6 +55,8 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.View
         Timber.v(imagepath);
         Timber.v(imageUrl);
         holder.bind(title, imageUrl);
+
+        setAnimation(holder.itemView, position);
     }
 
     @Override
@@ -68,6 +71,14 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.View
 
     public interface ItemClickListener {
         void onItemClick(Movie movie);
+    }
+
+    public void setAnimation(View viewToAnimate, int position) {
+        if (position > lastPosition) {
+            Animation animation = AnimationUtils.loadAnimation(context, R.anim.anim_slide_bottom);
+            viewToAnimate.startAnimation(animation);
+            lastPosition = position;
+        }
     }
 
     public List<Movie> getMovies() {
