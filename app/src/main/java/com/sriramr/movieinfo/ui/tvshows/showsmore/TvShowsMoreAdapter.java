@@ -98,13 +98,10 @@ public class TvShowsMoreAdapter extends RecyclerView.Adapter<TvShowsMoreAdapter.
 
         @BindView(R.id.movie_list_thumbnail)
         ImageView image;
-
         @BindView(R.id.movie_list_title)
         TextView title;
-
         @BindView(R.id.movie_list_ratings)
         TextView ratings;
-
         @BindView(R.id.movie_list_overflow)
         ImageView overflow;
 
