@@ -4,12 +4,14 @@ import com.sriramr.movieinfo.ui.discover.discoverdetail.models.DiscoverMoviesRes
 import com.sriramr.movieinfo.ui.discover.discoverdetail.models.DiscoverShowResponse;
 import com.sriramr.movieinfo.ui.movies.moviedetail.models.MovieDetailResponse;
 import com.sriramr.movieinfo.ui.movies.movielist.models.MovieListResponse;
+import com.sriramr.movieinfo.ui.people.peopledetail.models.PeopleDetailResponse;
 import com.sriramr.movieinfo.ui.people.peoplepopular.models.PopularPeopleResponse;
 import com.sriramr.movieinfo.ui.tvshows.showsdetail.models.TvShowDetailResponse;
 import com.sriramr.movieinfo.ui.tvshows.showslist.models.TvShowsResponse;
 import com.sriramr.movieinfo.utils.AppConstants;
 
 import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
 
 public class NetworkRepository {
 
@@ -72,5 +74,9 @@ public class NetworkRepository {
 
     public static Observable<PopularPeopleResponse> getPopularPeople(String apiKey, int page) {
         return mService.getPopularPeople(apiKey, page);
+    }
+
+    public static Observable<PeopleDetailResponse> getPeopleDetail(String id) {
+        return mService.getPersonDetail(id,AppConstants.API_KEY, AppConstants.STAR_APPEND_TO_RESPONSE);
     }
 }

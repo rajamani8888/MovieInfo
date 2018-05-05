@@ -1,11 +1,13 @@
 package com.sriramr.movieinfo.ui.people.peopledetail;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -13,25 +15,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-import com.sriramr.movieinfo.network.MovieService;
-import com.sriramr.movieinfo.network.NetworkService;
 import com.sriramr.movieinfo.R;
 import com.sriramr.movieinfo.ui.movies.moviedetail.MovieDetailActivity;
 import com.sriramr.movieinfo.ui.people.peopledetail.models.CastItem;
 import com.sriramr.movieinfo.ui.people.peopledetail.models.PeopleDetailResponse;
 import com.sriramr.movieinfo.ui.tvshows.showsdetail.TvShowDetailActivity;
 import com.sriramr.movieinfo.utils.AppConstants;
+import com.sriramr.movieinfo.utils.Status;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class PeopleDetailActivity extends AppCompatActivity implements CastAdapter.CastClickListener {
 
@@ -51,17 +46,12 @@ public class PeopleDetailActivity extends AppCompatActivity implements CastAdapt
     TextView profileOverview;
     @BindView(R.id.profile_cast)
     RecyclerView rvProfileCast;
-
-    MovieService service;
-    CastAdapter castAdapter;
-
-    String id = "";
-
-    List<CastItem> cast = new ArrayList<>();
     @BindView(R.id.pb_people_detail)
     ProgressBar pbPeopleDetail;
 
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    CastAdapter castAdapter;
+
+    private PeopleDetailViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,16 +67,17 @@ public class PeopleDetailActivity extends AppCompatActivity implements CastAdapt
         // intent to get the ID to ping
         Intent i = getIntent();
         Bundle bundle = i.getExtras();
-        if (bundle != null) {
-            id = bundle.getString(AppConstants.STAR_ID);
-        } else {
+        if (bundle == null) {
             Toast.makeText(this, "Error. Please try again", Toast.LENGTH_SHORT).show();
             finish();
             // if you don't, everything below this will run and app will crash because you dont have an ID.
             return;
         }
 
-        service = NetworkService.getService(this);
+        mViewModel = ViewModelProviders.of(this).get(PeopleDetailViewModel.class);
+
+        String id = bundle.getString(AppConstants.STAR_ID);
+        mViewModel.init(id);
 
         //setting up recycler view
         RecyclerView.LayoutManager castLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -98,22 +89,19 @@ public class PeopleDetailActivity extends AppCompatActivity implements CastAdapt
 
         pbPeopleDetail.setVisibility(View.VISIBLE);
 
+        observeDataFromApi();
+
     }
 
-    private void getDataFromApi() {
-        Observable<PeopleDetailResponse> call = service.getPersonDetail(id, AppConstants.API_KEY, AppConstants.STAR_APPEND_TO_RESPONSE);
-        compositeDisposable.add(
-                call.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(peopleDetailResponse -> {
-                            updateUI(peopleDetailResponse);
-                            pbPeopleDetail.setVisibility(View.GONE);
-                        }, throwable -> {
-                            Toast.makeText(PeopleDetailActivity.this, "Error. Please Try again..", Toast.LENGTH_SHORT).show();
-                            pbPeopleDetail.setVisibility(View.GONE);
-                        })
-        );
-
+    private void observeDataFromApi() {
+        mViewModel.getPeopleDetailItem().observe(this, peopleDetailItem -> {
+            if (peopleDetailItem == null || peopleDetailItem.getStatus() == Status.FAILURE) {
+                Toast.makeText(this, "Error retrieving data from API", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            pbPeopleDetail.setVisibility(View.GONE);
+            updateUI(peopleDetailItem.getItem());
+        });
     }
 
     private void updateUI(PeopleDetailResponse response) {
@@ -132,21 +120,8 @@ public class PeopleDetailActivity extends AppCompatActivity implements CastAdapt
 
         profileOverview.setText(response.getBiography());
 
-        cast = response.getCombinedCredits().getCast();
-        castAdapter.setCast(cast);
+        castAdapter.setCast(response.getCombinedCredits().getCast());
 
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        getDataFromApi();
-    }
-
-    @Override
-    protected void onPause() {
-        compositeDisposable.dispose();
-        super.onPause();
     }
 
     @Override
@@ -162,5 +137,17 @@ public class PeopleDetailActivity extends AppCompatActivity implements CastAdapt
             i.putExtra(AppConstants.TV_SHOW_TITLE, cast.getTitle());
             startActivity(i);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
