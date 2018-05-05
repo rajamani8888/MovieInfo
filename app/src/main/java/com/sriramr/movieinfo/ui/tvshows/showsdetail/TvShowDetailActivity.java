@@ -74,16 +74,16 @@ public class TvShowDetailActivity extends AppCompatActivity implements TvShowCas
     TextView detailSeasonCount;
     @BindView(R.id.detail_episodes_count)
     TextView detailEpisodesCount;
-
-    TvShowSeasonsAdapter seasonsAdapter;
-    TvShowCastAdapter castAdapter;
-    TvShowRecommendationsAdapter recommendationsAdapter;
     @BindView(R.id.layout_seasons)
     CardView layoutSeasons;
     @BindView(R.id.layout_casts)
     CardView layoutCasts;
     @BindView(R.id.layout_recommendations)
     CardView layoutRecommendations;
+
+    TvShowSeasonsAdapter seasonsAdapter;
+    TvShowCastAdapter castAdapter;
+    TvShowRecommendationsAdapter recommendationsAdapter;
 
     private TvShowsViewModel mViewModel;
 
@@ -228,15 +228,18 @@ public class TvShowDetailActivity extends AppCompatActivity implements TvShowCas
                 .centerCrop().fit().into(detailVideosView);
 
         // seasons adapter
-        if (mViewModel.getSeasons() != null) seasonsAdapter.setSeasons(mViewModel.getSeasons());
+        if (mViewModel.getSeasons() != null || mViewModel.getSeasons().isEmpty())
+            seasonsAdapter.setSeasons(mViewModel.getSeasons());
         else layoutSeasons.setVisibility(View.GONE);
 
         // cast adapter
-        if (mViewModel.getCasts() != null) castAdapter.setCast(mViewModel.getCasts());
+        if (mViewModel.getCasts() != null || mViewModel.getCasts().isEmpty())
+            castAdapter.setCast(mViewModel.getCasts());
         else layoutCasts.setVisibility(View.GONE);
 
         // recommendations adapter
-        if (mViewModel.getRecommendations() != null) recommendationsAdapter.setRecommendations(mViewModel.getRecommendations().getResults());
+        if (mViewModel.getRecommendations().getResults() != null || mViewModel.getRecommendations().getResults().isEmpty() || mViewModel.getRecommendations().getTotalResults() == 0)
+            recommendationsAdapter.setRecommendations(mViewModel.getRecommendations().getResults());
         else layoutRecommendations.setVisibility(View.GONE);
     }
 

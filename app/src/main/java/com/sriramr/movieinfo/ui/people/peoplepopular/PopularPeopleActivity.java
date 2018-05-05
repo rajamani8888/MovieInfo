@@ -1,5 +1,6 @@
 package com.sriramr.movieinfo.ui.people.peoplepopular;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -9,29 +10,24 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.sriramr.movieinfo.network.MovieService;
-import com.sriramr.movieinfo.network.NetworkService;
 import com.sriramr.movieinfo.R;
 import com.sriramr.movieinfo.ui.people.peopledetail.PeopleDetailActivity;
 import com.sriramr.movieinfo.ui.people.peoplepopular.models.PopularPeople;
-import com.sriramr.movieinfo.ui.people.peoplepopular.models.PopularPeopleResponse;
 import com.sriramr.movieinfo.utils.AppConstants;
+import com.sriramr.movieinfo.utils.EndlessRecyclerViewScrollListener;
+import com.sriramr.movieinfo.utils.Status;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
-import timber.log.Timber;
 
 public class PopularPeopleActivity extends AppCompatActivity implements PopularPeopleAdapter.PopularPeopleClickListener {
 
@@ -39,18 +35,12 @@ public class PopularPeopleActivity extends AppCompatActivity implements PopularP
     Toolbar toolbar;
     @BindView(R.id.rv_popular_people)
     RecyclerView rvPopularPeople;
-
-    MovieService service;
+    @BindView(R.id.pb_popular_people)
+    ProgressBar pbPopularPeople;
 
     PopularPeopleAdapter popularPeopleAdapter;
 
-    List<PopularPeople> peopleList = new ArrayList<>();
-
-    private static int PAGE = 1;
-
-    String tag = "";
-    Bundle b = null;
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private PopularPeopleViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,19 +55,21 @@ public class PopularPeopleActivity extends AppCompatActivity implements PopularP
         }
 
         // Get Tag and display data accordingly.
-        b = getIntent().getExtras();
-        if (b != null) {
-            Parcelable parcelPeople = getIntent().getParcelableExtra(AppConstants.CAST_LIST);
-            peopleList = Parcels.unwrap(parcelPeople);
-            tag = b != null ? b.getString(AppConstants.TAG) : null;
-        } else {
+        Intent i = getIntent();
+        Bundle b = i.getExtras();
+
+        if (b == null) {
             Toast.makeText(this, "Error loading. Please try again..", Toast.LENGTH_SHORT).show();
             finish();
             // return is required as we dont want to execute the code below and just want the activity to close.
             return;
         }
 
-        Timber.e("TAG %s", tag);
+        mViewModel = ViewModelProviders.of(this).get(PopularPeopleViewModel.class);
+
+        Parcelable parcelPeople = getIntent().getParcelableExtra(AppConstants.CAST_LIST);
+        ArrayList<PopularPeople> peopleList = Parcels.unwrap(parcelPeople);
+        String tag = b.getString(AppConstants.TAG);
 
         // We close the activity if we dont get a tag through the intent
         if (Objects.equals(tag, "") || tag == null) {
@@ -86,33 +78,46 @@ public class PopularPeopleActivity extends AppCompatActivity implements PopularP
             return;
         }
 
-        service = NetworkService.getService(this);
+        mViewModel.init(tag);
 
-        RecyclerView.LayoutManager popularPeopleLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager popularPeopleLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rvPopularPeople.setLayoutManager(popularPeopleLayoutManager);
         rvPopularPeople.setHasFixedSize(true);
         rvPopularPeople.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         popularPeopleAdapter = new PopularPeopleAdapter(this, this);
         rvPopularPeople.setAdapter(popularPeopleAdapter);
 
+        // we need to execute the network call only if the tag is popular people. For rest, the data will be sent through the intent
+        if (!Objects.equals(tag, AppConstants.POPULAR_PEOPLE)) {
+            // if the tag isn't popular people , we have the list and we have to update the rv.
+            mViewModel.setPeople(peopleList);
+        }
+
+        pbPopularPeople.setVisibility(View.VISIBLE);
+        observeData();
+
+        if (mViewModel.getTag().equals(AppConstants.POPULAR_PEOPLE)) {
+            EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(popularPeopleLayoutManager) {
+                @Override
+                public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                    mViewModel.refreshData();
+                }
+            };
+
+            rvPopularPeople.addOnScrollListener(scrollListener);
+        }
+
     }
 
-    // api call to get popular people
-    private void makeApiCall(int page) {
-
-        Observable<PopularPeopleResponse> call = service.getPopularPeople(AppConstants.API_KEY, page);
-
-        compositeDisposable.add(
-                call.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(popularPeopleResponse -> {
-                            peopleList.addAll(popularPeopleResponse.getResults());
-                            popularPeopleAdapter.addPeople(peopleList);
-                        }, throwable -> {
-                            Toast.makeText(PopularPeopleActivity.this, "Error loading list.", Toast.LENGTH_SHORT).show();
-                        })
-        );
-
+    private void observeData() {
+        mViewModel.getPopularPeople().observe(this, popularPeopleItem -> {
+            if (popularPeopleItem == null || popularPeopleItem.getStatus() == Status.FAILURE) {
+                Toast.makeText(this, "Error getting data.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            pbPopularPeople.setVisibility(View.GONE);
+            popularPeopleAdapter.addPeople(popularPeopleItem.getItems());
+        });
     }
 
     @Override
@@ -132,25 +137,5 @@ public class PopularPeopleActivity extends AppCompatActivity implements PopularP
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // we need to execute the network call only if the tag is popular people. For rest, the data will be sent through the intent
-        if (Objects.equals(tag, AppConstants.POPULAR_PEOPLE)) {
-            peopleList = new ArrayList<>();
-            makeApiCall(PAGE);
-        } else {
-            // if the tag isn't popular people , we have the list and we have to update the rv.
-            Timber.e("Added cast from movie/show");
-            Timber.e("Length %d", peopleList.size());
-            popularPeopleAdapter.addPeople(peopleList);
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        compositeDisposable.dispose();
-        super.onPause();
-    }
 
 }

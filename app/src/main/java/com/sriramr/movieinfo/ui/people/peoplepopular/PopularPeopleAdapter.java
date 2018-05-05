@@ -1,10 +1,13 @@
 package com.sriramr.movieinfo.ui.people.peoplepopular;
 
 import android.content.Context;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,6 +15,7 @@ import com.squareup.picasso.Picasso;
 import com.sriramr.movieinfo.R;
 import com.sriramr.movieinfo.ui.people.peoplepopular.models.PopularPeople;
 import com.sriramr.movieinfo.utils.AppConstants;
+import com.sriramr.movieinfo.utils.DiffUtilsCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +28,7 @@ public class PopularPeopleAdapter extends RecyclerView.Adapter<PopularPeopleAdap
     private Context context;
     private List<PopularPeople> popularPeople;
     private PopularPeopleClickListener mClickListener;
+    private int lastPosition = -1;
 
     public PopularPeopleAdapter(Context context, PopularPeopleClickListener clickListener) {
         this.context = context;
@@ -41,6 +46,8 @@ public class PopularPeopleAdapter extends RecyclerView.Adapter<PopularPeopleAdap
     public void onBindViewHolder(ViewHolder holder, int position) {
         PopularPeople person = popularPeople.get(position);
         holder.bind(person);
+
+        showAnimation(holder.itemView, position);
     }
 
     @Override
@@ -49,12 +56,24 @@ public class PopularPeopleAdapter extends RecyclerView.Adapter<PopularPeopleAdap
     }
 
     public void addPeople(List<PopularPeople> popularPeople) {
-        this.popularPeople = popularPeople;
-        notifyDataSetChanged();
+        DiffUtilsCallback<PopularPeople> callback = new DiffUtilsCallback<>(popularPeople, this.popularPeople);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(callback);
+
+        diffResult.dispatchUpdatesTo(this);
+        this.popularPeople.clear();
+        this.popularPeople.addAll(popularPeople);
     }
 
     public interface PopularPeopleClickListener {
         void onPersonClicked(PopularPeople popularPeople);
+    }
+
+    private void showAnimation(View viewToAnimate, int position) {
+        if (position > lastPosition) {
+            Animation fromLeft = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
+            viewToAnimate.setAnimation(fromLeft);
+            lastPosition = position;
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
